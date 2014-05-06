@@ -35,6 +35,7 @@
 	</style>
 	
 	<script type="text/javascript">
+	
 		function getDataOf(cmdName) {
 			var ret = null;
 			switch (cmdName) {
@@ -214,6 +215,42 @@
 			editableGrid.renderGrid();
 		}
 //-->
+		// 
+		// コードの生成処理（ひな形の取得）
+		// 
+		function create_src(){
+
+			// ひな形の読出し（非同期）
+			var objXML;
+			reqXML = new XMLHttpRequest();
+			reqXML.onreadystatechange = create_src_view;
+			reqXML.open( "GET", "https://dl.dropboxusercontent.com/u/71549646/external/SrSrcBase.c", false );
+			reqXML.send( null );
+		}
+
+		// 
+		// コードの生成処理（コードの表示）
+		// 
+		function create_src_view()
+		{
+			if (reqXML.readyState == 4 && reqXML.status == 200)
+			{
+				// コード生成のオブジェクト（仮生成）TBD
+				var cmds = new CmdScript(1);
+				var cmdArray = [cmds];
+				var playinfo = new PlayInfo(cmdArray);
+
+				// キーワードの置換
+				var src = reqXML.responseText;
+				src = src.replace("[key_cmd_list]", playinfo.playsrc());
+				src = src.replaceAll("&", "&amp;");
+				src = src.replaceAll("<", "&lt;");
+				src = src.replaceAll(">", "&gt;");
+
+				document.getElementById("code").innerHTML = "<pre><code>" + src + "</code></pre>";
+			}
+		}
+
 	</script>
 	
 </head>
@@ -612,6 +649,7 @@
 				<a href="#code">自動生成プログラムリスト</a>
 			</li>
 		</ul>
+		<button onclick="create_src()">生成</button>
 		<div id="code" class="tab-content clearfix" style="display: block; ">
 			<pre class="prettyprint">
 				TODO
