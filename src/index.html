@@ -63,17 +63,15 @@
 
 		function insert() {
 		
-			// mock用のパラメータの取得
+			// パラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
-			//alert("TODO: 'INSERT' record func using param of[" + currentCommandName + "]");
 			var cmd = getDataOf(currentCommandName);
 			
-			//alert(JSON.stringify(cmd));
+			alert(JSON.stringify(cmd)); // debug
 			
 			// レコード挿入
 			// TODO: - 選択行を元に新規レコードのIDを払い出す
 			//     : - 挿入するデータを演出パラメータから作成する(ひとまずJSON形式)
-			
 			var values = editableGrid.getRowValues(0); // mock
 			var buffer = cmd.get_command();
 			var uint8s = new Uint8Array(buffer);
@@ -105,7 +103,6 @@
 			
 			// レコード追加
 			//	TODO: - 演出パラメータから挿入するデータを作成する(ひとまずJSON形式)
-
 			var values = editableGrid.getRowValues("0"); // mock
 			values['Name'] = 'an appended record.';      // mock
 			
@@ -247,7 +244,7 @@
 				src = src.replaceAll("<", "&lt;");
 				src = src.replaceAll(">", "&gt;");
 
-				document.getElementById("code").innerHTML = "<pre><code>" + src + "</code></pre>";
+				$("#code pre").html(src); // jQueryスタイルでコード簡易化 & 意図しないスタイルの適用を回避
 			}
 		}
 
@@ -330,7 +327,7 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td><input id="col_input3" type="checkbox" />色転送のみ</td>
+						<td><input id="col_input3" type="checkbox" />色転送のみ(描画保留)</td>
 					</tr>
 					<tr>
 						<td></td>
@@ -342,10 +339,10 @@
 			<h6>制御対象のLED選択</h6>
 			<table>
 				<thead>
-					TODO: トグルボタンでやる
+					TODO: チェックボックス配列の長さの動的制御
 				</thead>
-				<tr>
-				</tr>
+				<tr><input type="checkbox" /></tr>
+				<tr>TODO: チェックボックスの加工用のUIも追加</tr>
 			</table>
 		</div>
 		
@@ -363,7 +360,7 @@
 				</thead>
 					<tr>
 						<td>時間(ms)</td>
-						<td><input id="del_input0" /><label class="col_2 column">0 - xx</label></td>
+						<td><input id="del_input0" /><label class="col_2 column">1 - 100000</label></td>
 					</tr>
 			</table>
 		</div>
@@ -383,20 +380,16 @@
 					<tr>
 						<td>動作方向</td>
 						<td><select id="sft_select0">
-							<option>0:Right</option>
-							<option>1:</option>
-							<option>2:</option>
-							<option>3:</option>
+							<option value="0">0:Right</option>
+							<option value="1">1:Left</option>
 						</select></td>
 					</tr>
 	
 					<tr>
 						<td>動作</td>
 						<td><select id="sft_select1">
-							<option>0:Clear</option>
-							<option>1:</option>
-							<option>2:</option>
-							<option>3:</option>
+							<option value="0">0:Clear</option>
+							<option value="1">1:Rotating</option>
 						</select></td>
 					</tr>
 	
@@ -427,10 +420,8 @@
 					<tr>
 						<td>描画モード</td>
 						<td><select id="rnb_select0">
-							<option>0:All</option>
-							<option>1:</option>
-							<option>2:</option>
-							<option>3:</option>
+							<option value="0">0:All</option>
+							<option value="1">1:Individual</option>
 						</select></td>
 					</tr>
 	
@@ -479,10 +470,8 @@
 				<tr>
 					<td>制御フラグ</td>
 					<td><select id="bar_select0" >
-							<option>0:Right</option>
-							<option>1:</option>
-							<option>2:</option>
-							<option>3:</option>
+							<option value="0">0:Right</option>
+							<option value="1">1:Left</option>
 						</select>
 						<span>
 							<input id="bar_input3" type="checkbox" />
@@ -502,7 +491,7 @@
 					<td><input id="bar_input5" /><label class="col_2 column">0 - 255</label></td>
 				</tr>
 				<tr>
-					<td>全点灯時間(+10ms)</td>
+					<td>全点灯時間(*10ms)</td>
 					<td><input id="bar_input6" /><label class="col_2 column">0 - 255</label></td>
 				</tr>
 				<tr>
@@ -571,7 +560,7 @@
 				</thead>
 				<tr>
 					<td>繰り返し回数(times)</td>
-					<td><input id="lop_input0" /><label class="col_3 column">0 - 1000000</label></td>
+					<td><input id="lop_input0" /><label class="col_3 column">1 - 100000</label></td>
 				</tr>
 			</table>
 		</div>
@@ -649,10 +638,9 @@
 				<a href="#code">自動生成プログラムリスト</a>
 			</li>
 		</ul>
-		<button onclick="create_src()">生成</button>
 		<div id="code" class="tab-content clearfix" style="display: block; ">
+			<button onclick="create_src()">生成</button>
 			<pre class="prettyprint">
-				TODO
 			</pre>
 		</div>
 	</div>
