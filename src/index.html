@@ -34,29 +34,36 @@
 	<script type="text/javascript">
 <!--
 		function getDataOf(cmdName) {
-			// それぞれパラムを返すモックにする。
+
 			switch (cmdName) {
 				case "System":
+					makeSystemRecord(); break;
 				case "Color":
+					makeColorRecord();  break;
 				case "Delay":
+					makeDelayRecord();  break;
 				case "Shift":
+					makeShiftRecord();  break;
 				case "Rainbow":
+					makeRainbowRecord(); break;
 				case "Bar":
+					makeBarRecord(); break;
 				case "Seesaw":
+					makeSeesawRecord(); break;
 				case "Loop":
-					alert(cmdName);
-					break;
+					makeLoopRecord(); break;
 				default:
 					alert("default");
 			}
 		}
-
+		
 		function insert() {
+		
+			// mock用のパラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
+			alert("TODO: 'INSERT' record func using param of[" + currentCommandName + "]");
 			var currentParams = getDataOf(currentCommandName);
 			
-			alert("TODO: insert record func using param of[" + currentCommandName + "]");
-
 			// レコード挿入
 			// TODO: - 選択行を元に新規レコードのIDを払い出す
 			//     : - 挿入するデータを演出パラメータから作成する(ひとまずJSON形式)
@@ -67,10 +74,14 @@
 			// var values = makeNewRecordWith("#ControlCommands");
 			editableGrid.insert(0,1,values);
 		}
+		
 		function add() {
+		
+			// mock用のパラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
-			alert("TODO: add record func using param of[" + currentCommandName + "]");
-
+			alert("TODO: 'ADD' record func using param of[" + currentCommandName + "]");
+			var currentParams = getDataOf(currentCommandName);
+			
 			// レコード追加
 			//	TODO: - 演出パラメータから挿入するデータを作成する(ひとまずJSON形式)
 
@@ -83,23 +94,21 @@
 		}
 		function replace() {
 			// あとで
-			alert('replace...not implemented.');
+			alert("TODO: 'REPLACE'");
 		}
 		function get() {
 			// あとで
-			alert('get...not implemented.');
+			alert("TODO: 'GET'");
 		}
 		function dele() {
-			// No GUI. for debug.
+			// No GUI, for debug.
 			var curId = editableGrid.getRowCount();
 			editableGrid.removeRow(curId);
 		}
 		
-		// メインロジック
-		function makeNewRecordWith(id) {
-			// TODO
-			// ControlCommandsペインの値から、レコード作成するロジック
-		}
+		// 
+		// mock: ペインごとに入力値を取得するサンプル関数
+		//
 		function makeSystemRecord(){
 			// mock.
 			var str = [];
@@ -140,12 +149,11 @@
 			alert(str);
 		}
 		function makeLoopRecord(){
-			// mock.
 			var str = [];
 			str.push($("#lop_input0").val());
-			
 			alert(str);
 		}
+		
 		// 
 		// EditableGrid の初期化
 		// 
@@ -500,7 +508,6 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
 <!-- -- -- Middle            -- -- -- -->
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
-<!-- 中ペイン -->
 <div id="recordEdit" class="col_8 column">
 	<ul class="tabs">
 		<li class="first last current">
@@ -508,7 +515,7 @@
 		</li>
 	</ul>
 	<div id="edit" class="tab-content clearfix" style="display: block; ">
-		<h6>データテーブル操作(dummy)</h6>
+		<h6>データテーブル操作(dummy)</h6><!--あとでこのheadingは消す(開発中の便宜)-->
 		<table>
 			<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
 			<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
@@ -526,7 +533,7 @@
 			</li>
 		</ul>
 		<div id="edited" class="tab-content clearfix" style="display: block; ">
-			<h6>データテーブル(dummy)</h6>
+			<h6>データテーブル(dummy)</h6><!--あとでこのheadingは消す(開発中の便宜)-->
 			
 			<!-- EditableGrid(http://www.editablegrid.net/)-->
 			<table id="htmlgrid" class="testgrid">
@@ -541,7 +548,7 @@
 					<th>D3</th>
 					<th>D4</th>
 				</tr>
-				<tr id="0">
+				<tr id="0"><!--あとでこのレコードは消す(開発中の便宜)-->
 					<td>System</td>
 					<td>90</td>
 					<td>01</td>
