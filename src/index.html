@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- META -->
+	<title>LED Controller on Web</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta name="description" content="" />
+	
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="kickstart.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="style.css" media="all" /> 
+	
+	<!-- Javascript -->
+	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="kickstart.js"></script>
+	
+	<!-- tables -->
+	<script src="editablegrid-2.0.1.js"></script>
+	<link rel="stylesheet" href="editablegrid-2.0.1.css" type="text/css" media="screen">
+	
+	<style>
+		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
+		h1 { font-size: 15px; }
+		a { color: #548dc4; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		table.testgrid { border-collapse: collapse; border: 1px solid #CCB; width: 800px; }
+		table.testgrid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
+		table.testgrid th { background: #E5E5E5; text-align: left; }
+		input.invalid { background: red; color: #FDFDFD; }
+	</style>
+	
+	<script type="text/javascript">
+<!--
+		function getDataOf(cmdName) {
+			// それぞれパラムを返すモックにする。
+			switch (cmdName) {
+				case "System":
+				case "Color":
+				case "Delay":
+				case "Shift":
+				case "Rainbow":
+				case "Bar":
+				case "Seesaw":
+				case "Loop":
+					alert(cmdName);
+					break;
+				default:
+					alert("default");
+			}
+		}
+
+		function insert() {
+			var currentCommandName = $("#ControlCommands .current a").text();
+			var currentParams = getDataOf(currentCommandName);
+			
+			alert("TODO: insert record func using param of[" + currentCommandName + "]");
+
+			// レコード挿入
+			// TODO: - 選択行を元に新規レコードのIDを払い出す
+			//     : - 挿入するデータを演出パラメータから作成する(ひとまずJSON形式)
+			
+			var values = editableGrid.getRowValues(0); // mock
+			values['Name'] = 'an inserted record.';    // mock
+			
+			// var values = makeNewRecordWith("#ControlCommands");
+			editableGrid.insert(0,1,values);
+		}
+		function add() {
+			var currentCommandName = $("#ControlCommands .current a").text();
+			alert("TODO: add record func using param of[" + currentCommandName + "]");
+
+			// レコード追加
+			//	TODO: - 演出パラメータから挿入するデータを作成する(ひとまずJSON形式)
+
+			var values = editableGrid.getRowValues("0"); // mock
+			values['Name'] = 'an appended record.';      // mock
+			
+			// var values = makeNewRecordWith("#ControlCommands");
+			var nextId = editableGrid.getRowCount() + 1;
+			editableGrid.append(nextId, values);
+		}
+		function replace() {
+			// あとで
+			alert('replace...not implemented.');
+		}
+		function get() {
+			// あとで
+			alert('get...not implemented.');
+		}
+		function dele() {
+			// No GUI. for debug.
+			var curId = editableGrid.getRowCount();
+			editableGrid.removeRow(curId);
+		}
+		
+		// メインロジック
+		function makeNewRecordWith(id) {
+			// TODO
+			// ControlCommandsペインの値から、レコード作成するロジック
+		}
+		function makeSystemRecord(){
+			// mock.
+			var str = [];
+			$("#list-1 input, #list-1 select").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeColorRecord(){
+			// mock.
+			var str = [];
+			$("#list-2 input, #list-2 select").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeDelayRecord(){
+			// mock.
+			var str = [];
+			$("#list-3 input").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeShiftRecord(){
+			// mock.
+			var str = [];
+			$("#list-4 input, #list-4 select").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeRainbowRecord(){
+			var str = [];
+			$("#list-5 input, #list-5 select").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeBarRecord(){
+			var str = [];
+			$("#list-6 input, #list-6 select").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeSeesawRecord(){
+			var str = [];
+			$("#list-7 input").each(function(){str.push($(this).val())});
+			alert(str);
+		}
+		function makeLoopRecord(){
+			// mock.
+			var str = [];
+			str.push($("#lop_input0").val());
+			
+			alert(str);
+		}
+		// 
+		// EditableGrid の初期化
+		// 
+		window.onload = function(){
+			editableGrid = new EditableGrid("DemoGridAttach"); 
+
+			// we build and load the metadata in Javascript
+			editableGrid.load({ metadata: [
+				{ name: "Name", datatype: "string", editable: true },
+				{ name: "C1", datatype: "string", editable: true },
+				{ name: "C2", datatype: "string", editable: true },
+				{ name: "C3", datatype: "string", editable: true },
+				{ name: "C4", datatype: "string", editable: true },
+				{ name: "D1", datatype: "string", editable: true },
+				{ name: "D2", datatype: "string", editable: true },
+				{ name: "D3", datatype: "string", editable: true },
+				{ name: "D4", datatype: "string", editable: true }
+			]});
+
+			// then we attach to the HTML table and render it
+			editableGrid.attachToHTMLTable('htmlgrid');
+			editableGrid.renderGrid();
+		}
+//-->
+	</script>
+	
+</head>
+<body>
+
+<div id="upper" class="clearfix">
+	<div id="ControlCommands" class="col_8">
+
+	<!-- ===================================== 
+		LISTS 
+	===================================== -->
+	<!--<h4>Control Commands</h4>-->
+	<ul class="tabs">
+	<li><a href="#list-1">System</a></li>
+	<li><a href="#list-2">Color</a></li>
+	<li><a href="#list-3">Delay</a></li>
+	<li><a href="#list-4">Shift</a></li>
+	<li><a href="#list-5">Rainbow</a></li>
+	<li><a href="#list-6">Bar</a></li>
+	<li><a href="#list-7">Seesaw</a></li>
+	<li><a href="#list-8">Loop</a></li>
+	</ul>
+	
+	<!-------------->
+	<!-- system ---->
+	<!-------------->
+		<div id="list-1" class="tab-content">
+			<h6>システム設定 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>LED種別</td>
+						<td><select id="sys_select0">
+								<option value="0">0:WS2812</option>
+								<option value="1">1:WS2812B</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>LED総数</td>
+						<td><input id="sys_input0"/><label class="col_2 column">1 - 32</label></td>
+					</tr>
+					<tr>
+						<td>コマンド間Wait</td>
+						<td><input id="sys_input1"/><label class="col_2 column">0 - 65535</label></td>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		
+	<!-------------->
+	<!-- Color ---->
+	<!-------------->
+		<div id="list-2" class="tab-content">
+			<h6>単一色 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>色相(H)</td>
+						<td><input id="col_input0" /><label class="col_2 column">0 - 359</label></td>
+					</tr>
+					<tr>
+						<td>彩度(S)</td>
+						<td><input id="col_input1" /><label class="col_2 column">0 - 255</label></td>
+					</tr>
+					<tr>
+						<td>明度(V)</td>
+						<td><input id="col_input2" /><label class="col_2 column">0 - 255</label></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input id="col_input3" type="checkbox" />色転送のみ</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input id="col_input4" type="checkbox" />対象外LEDの消灯</td>
+					</tr>
+				</thead>
+			</table>
+			
+			<h6>制御対象のLED選択</h6>
+			<table>
+				<thead>
+					TODO: トグルボタンでやる
+				</thead>
+				<tr>
+				</tr>
+			</table>
+		</div>
+		
+	<!-------------->
+	<!-- Delay ---->
+	<!-------------->
+		<div id="list-3" class="tab-content">
+			<h6>待ち時間 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tr>
+						<td>時間(ms)</td>
+						<td><input id="del_input0" /><label class="col_2 column">0 - xx</label></td>
+					</tr>
+			</table>
+		</div>
+		
+	<!-------------->
+	<!-- Shift ---->
+	<!-------------->
+		<div id="list-4" class="tab-content">
+			<h6>シフト 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tr>
+						<td>動作方向</td>
+						<td><select id="sft_select0">
+							<option>0:Right</option>
+							<option>1:</option>
+							<option>2:</option>
+							<option>3:</option>
+						</select></td>
+					</tr>
+	
+					<tr>
+						<td>動作</td>
+						<td><select id="sft_select1">
+							<option>0:Clear</option>
+							<option>1:</option>
+							<option>2:</option>
+							<option>3:</option>
+						</select></td>
+					</tr>
+	
+					<tr>
+						<td>動作間隔(ms)</td>
+						<td><input id="sft_input0" /><label class="col_2 column">0 - 65535</label></td>
+					</tr>
+	
+					<tr>
+						<td>シフト回数</td>
+						<td><input id="sft_input1" /><label class="col_2 column">0 - 65535</label></td>
+					</tr>
+			</table>
+		</div>
+		
+	<!-------------->
+	<!-- Rainbow ---->
+	<!-------------->
+		<div id="list-5" class="tab-content">
+			<h6>虹色 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tr>
+						<td>描画モード</td>
+						<td><select id="rnb_select0">
+							<option>0:All</option>
+							<option>1:</option>
+							<option>2:</option>
+							<option>3:</option>
+						</select></td>
+					</tr>
+	
+					<tr>
+						<td>明るさ</td>
+						<td><input id="rnb_input0" /><label class="col_2 column">0 - 255</label></td>
+					</tr>
+	
+					<tr>
+						<td>時間調整(ms)</td>
+						<td><input id="rnb_input1" /><label class="col_2 column">0 - 255</label></td>
+					</tr>
+	
+					<tr>
+						<td>繰り返し回数</td>
+						<td><input id="rnb_input2" /><label class="col_2 column">0 - 65535</label></td>
+					</tr>
+			</table>
+	
+		</div>
+	
+	<!-------------->
+	<!-- Bar ---->
+	<!-------------->
+		<div id="list-6" class="tab-content">
+			<h6>LEDバー 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr>
+					<td>色相(H)</td>
+					<td><input id="bar_input0" /><label class="col_2 column">0 - 359</label></td>
+				</tr>
+				<tr>
+					<td>彩度(S)</td>
+					<td><input id="bar_input1" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>明度(V)</td>
+					<td><input id="bar_input2" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>制御フラグ</td>
+					<td><select id="bar_select0" >
+							<option>0:Right</option>
+							<option>1:</option>
+							<option>2:</option>
+							<option>3:</option>
+						</select>
+						<span>
+							<input id="bar_input3" type="checkbox" />
+							<label for="bar_input3" class="inline">全点灯Wait</label>
+						</span>
+						<span>
+							<input id="bar_input4" type="checkbox" />
+							<label for="bar_input4" class="inline">全消灯Wait</label>
+						</span>
+						<span>
+							<label class="inline">TODO:アイコン</label>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>フェード時間(ms)</td>
+					<td><input id="bar_input5" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>全点灯時間(+10ms)</td>
+					<td><input id="bar_input6" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>繰り返し回数</td>
+					<td><input id="bar_input7" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+			</table>
+	
+		</div>
+	
+	<!-------------->
+	<!-- Seesaw ---->
+	<!-------------->
+		<div id="list-7" class="tab-content">
+			<h6>シーソー 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr>
+					<td>明るさ</td>
+					<td><input id="ssw_input0" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>演出間隔(ms)</td>
+					<td><input id="ssw_input1" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>演出回数</td>
+					<td><input id="ssw_input2" /><label class="col_2 column">0 - 255</label></td>
+				</tr>
+				<tr>
+					<td>色</td>
+					<td>
+						<span>
+							<input id="ssw_input3" type="checkbox" />
+							<label for="ssw_input3" class="inline">Red</label>
+						</span>
+						<span>
+							<input id="ssw_input4" type="checkbox" />
+							<label for="ssw_input4" class="inline">Green</label>
+						</span>
+						<span>
+							<input id="ssw_input5" type="checkbox" />
+							<label for="ssw_input5" class="inline">Blue</label>
+						</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	
+	<!-------------->
+	<!-- Loop ---->
+	<!-------------->
+		<div id="list-8" class="tab-content">
+			<h6>繰り返し 演出パラメータ</h6>
+			<table>
+				<thead>
+					<tr class="alt first">
+						<th>Item</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tr>
+					<td>繰り返し回数(times)</td>
+					<td><input id="lop_input0" /><label class="col_3 column">0 - 1000000</label></td>
+				</tr>
+			</table>
+		</div>
+	</div> <!-- "ControlCommands"-->
+</div> <!-- upper -->
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -->
+<!-- -- -- Middle            -- -- -- -->
+<!-- -- -- -- -- -- -- -- -- -- -- -- -->
+<!-- 中ペイン -->
+<div id="recordEdit" class="col_8 column">
+	<ul class="tabs">
+		<li class="first last current">
+			<a href="#edit">レコード操作</a>
+		</li>
+	</ul>
+	<div id="edit" class="tab-content clearfix" style="display: block; ">
+		<h6>データテーブル操作(dummy)</h6>
+		<table>
+			<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
+			<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
+			<tr><button onclick="replace()">上書</button></tr><!-- 選択しているレコードに上書き -->
+			<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
+		</table>
+	</div>
+</div>
+
+<div>
+	<div id="recordTable" class="col_8 column">
+		<ul class="tabs">
+			<li class="first last current">
+				<a href="#edited">レコードリスト</a>
+			</li>
+		</ul>
+		<div id="edited" class="tab-content clearfix" style="display: block; ">
+			<h6>データテーブル(dummy)</h6>
+			
+			<!-- EditableGrid(http://www.editablegrid.net/)-->
+			<table id="htmlgrid" class="testgrid">
+				<tr>
+					<th>Name</th>
+					<th>C1</th>
+					<th>C2</th>
+					<th>C3</th>
+					<th>C4</th>
+					<th>D1</th>
+					<th>D2</th>
+					<th>D3</th>
+					<th>D4</th>
+				</tr>
+				<tr id="0">
+					<td>System</td>
+					<td>90</td>
+					<td>01</td>
+					<td>00</td>
+					<td>00</td>
+					<td>08</td>
+					<td>00</td>
+					<td>14</td>
+					<td>05</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -->
+<!-- -- -- Bottom            -- -- -- -->
+<!-- -- -- -- -- -- -- -- -- -- -- -- -->
+<div>
+	<div class="col_8 column">
+		<ul class="tabs">
+			<li class="first last current">
+				<a href="#code">自動生成プログラムリスト</a>
+			</li>
+		</ul>
+		<div id="code" class="tab-content clearfix" style="display: block; ">
+			<pre class="prettyprint">
+				TODO
+			</pre>
+		</div>
+	</div>
+	
+	<div class="col_8 column">
+		<ul class="tabs">
+			<li class="first last current">
+				<a href="#simulator">LEDシミュレーション</a>
+			</li>
+		</ul>
+		<div id="simulator" class="tab-content clearfix" style="display: block; ">
+			TODO: canvas?
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>
