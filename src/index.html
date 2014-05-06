@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- META -->
-	<title>LED Controller on Web</title>
+	<title>LED Controller on Web2</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<meta name="description" content="" />
@@ -15,6 +15,9 @@
 	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
 	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="kickstart.js"></script>
+	<script type="text/javascript" src="SrLib.js"></script>
+	<script type="text/javascript" src="SrCmds.js"></script>
+	<script type="text/javascript" src="SrPlay.js"></script>
 	
 	<!-- tables -->
 	<script src="editablegrid-2.0.1.js"></script>
@@ -32,49 +35,66 @@
 	</style>
 	
 	<script type="text/javascript">
-<!--
 		function getDataOf(cmdName) {
-
+			var ret = null;
 			switch (cmdName) {
 				case "System":
-					makeSystemRecord(); break;
+					ret = makeSystemRecord(); break;
 				case "Color":
-					makeColorRecord();  break;
+					ret = makeColorRecord();  break;
 				case "Delay":
-					makeDelayRecord();  break;
+					ret = makeDelayRecord();  break;
 				case "Shift":
-					makeShiftRecord();  break;
+					ret = makeShiftRecord();  break;
 				case "Rainbow":
-					makeRainbowRecord(); break;
+					ret = makeRainbowRecord(); break;
 				case "Bar":
-					makeBarRecord(); break;
+					ret = makeBarRecord(); break;
 				case "Seesaw":
-					makeSeesawRecord(); break;
+					ret = makeSeesawRecord(); break;
 				case "Loop":
-					makeLoopRecord(); break;
+					ret = makeLoopRecord(); break;
 				default:
 					alert("default");
 			}
+			return ret;
 		}
-		
+
 		function insert() {
 		
 			// mock用のパラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
-			alert("TODO: 'INSERT' record func using param of[" + currentCommandName + "]");
-			var currentParams = getDataOf(currentCommandName);
+			//alert("TODO: 'INSERT' record func using param of[" + currentCommandName + "]");
+			var cmd = getDataOf(currentCommandName);
+			
+			//alert(JSON.stringify(cmd));
 			
 			// レコード挿入
 			// TODO: - 選択行を元に新規レコードのIDを払い出す
 			//     : - 挿入するデータを演出パラメータから作成する(ひとまずJSON形式)
 			
 			var values = editableGrid.getRowValues(0); // mock
-			values['Name'] = 'an inserted record.';    // mock
-			
+			var buffer = cmd.get_command();
+			var uint8s = new Uint8Array(buffer);
+
+			// Gridに表示するデータの追加
+			// TBD 本当に生データを表示することに意味があるのか？
+			//     Jsonの文字列を表示した方が良いのでは？と最近感じました。
+			values['Name'] = cmd.get_funcname();
+			values['C1'] = NumberToHexString(uint8s[0]);
+			values['C2'] = NumberToHexString(uint8s[1]);
+			values['C3'] = NumberToHexString(uint8s[2]);
+			values['C4'] = NumberToHexString(uint8s[3]);
+			values['D1'] = NumberToHexString(uint8s[4]);
+			values['D2'] = NumberToHexString(uint8s[5]);
+			values['D3'] = NumberToHexString(uint8s[6]);
+			values['D4'] = NumberToHexString(uint8s[7]);
+			values['Remarks'] = JSON.stringify(cmd);
+
 			// var values = makeNewRecordWith("#ControlCommands");
 			editableGrid.insert(0,1,values);
 		}
-		
+<!--		
 		function add() {
 		
 			// mock用のパラメータの取得
@@ -105,7 +125,7 @@
 			var curId = editableGrid.getRowCount();
 			editableGrid.removeRow(curId);
 		}
-		
+-->
 		// 
 		// mock: ペインごとに入力値を取得するサンプル関数
 		//
@@ -113,47 +133,63 @@
 			// mock.
 			var str = [];
 			$("#list-1 input, #list-1 select").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdSystemFromStr(str);
 		}
 		function makeColorRecord(){
 			// mock.
 			var str = [];
 			$("#list-2 input, #list-2 select").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdColorFromStr(str);
 		}
 		function makeDelayRecord(){
 			// mock.
 			var str = [];
 			$("#list-3 input").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdWaitFromStr(str);
 		}
 		function makeShiftRecord(){
 			// mock.
 			var str = [];
 			$("#list-4 input, #list-4 select").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdShiftFromStr(str);
 		}
 		function makeRainbowRecord(){
 			var str = [];
 			$("#list-5 input, #list-5 select").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdRainbowFromStr(str);
 		}
 		function makeBarRecord(){
 			var str = [];
 			$("#list-6 input, #list-6 select").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdBarFromStr(str);
 		}
 		function makeSeesawRecord(){
 			var str = [];
 			$("#list-7 input").each(function(){str.push($(this).val())});
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdSeesawFromStr(str);
 		}
 		function makeLoopRecord(){
 			var str = [];
 			str.push($("#lop_input0").val());
-			alert(str);
+
+			// オブジェクトの生成
+			return CmdLoopFromStr(str);
 		}
-		
+<!--
 		// 
 		// EditableGrid の初期化
 		// 
@@ -547,6 +583,7 @@
 					<th>D2</th>
 					<th>D3</th>
 					<th>D4</th>
+					<th>Remarks</th>
 				</tr>
 				<tr id="0"><!--あとでこのレコードは消す(開発中の便宜)-->
 					<td>System</td>
@@ -558,6 +595,7 @@
 					<td>00</td>
 					<td>14</td>
 					<td>05</td>
+					<th>Sample</th>
 				</tr>
 			</table>
 		</div>
