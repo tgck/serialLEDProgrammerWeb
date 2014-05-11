@@ -11,5 +11,5 @@ serialLEDProgrammer
 ### 利用ライブラリ
 
 - jQuery-1.9.1
-- HTML Kickstart 
+- HTML Kickstart
 - editablegrid-2.0.1

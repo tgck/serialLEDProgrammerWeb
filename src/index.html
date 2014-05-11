@@ -35,7 +35,61 @@
 	</style>
 	
 	<script type="text/javascript">
-	
+		// 
+		// グローバル変数
+		// 
+		// LED総数
+		//	方針: モデルは固定長とし、ledsToUse(利用する長さ)と常にセットで管理する
+		var MAX_LED = 32;
+		var ledArrayBools = Array(MAX_LED);
+		var ledsToUse = 8;
+				
+		// 制御対象LEDの表示を更新する
+		function updateViewLeds(){
+			
+			// GUI部品の再生成
+			var ledLen = $("#sys_input0").val() || ledsToUse;
+			var wrapper = $("#checkboxContainer");
+			var aElem = "<input type='checkbox' />" 
+			var sepBar = "|"
+			
+			wrapper.empty().append(sepBar);
+			
+			for (var i=0; i< ledsToUse; i++ ) {
+				wrapper.append(aElem);
+				if (i % 8 == 7 ) wrapper.append(sepBar);
+			}
+			
+			// モデルから値を復元
+			var inputs = $("#checkboxContainer input");
+			for (var i=0; i< ledsToUse; i++) {
+				// $($("#checkboxContainer input")[i]).prop('checked', ledArrayBools[i]);
+				$( inputs[i]).prop('checked', ledArrayBools[i]);
+			}
+		}
+		
+		function updateTargetLeds(){
+			var newNum = $("#sys_input0").val();
+			
+			if ( newNum > 0 && newNum <= MAX_LED ) {
+				ledsToUse = newNum;
+				
+				// GUIの更新
+				updateViewLeds();
+			} else {
+				alert("leds shuold be 1..32");
+				$("#sys_input0").val(ledToUse);
+			}
+		}
+		
+		// GUI(checkbox)の変更をモデルに反映する
+		function updateLedArr(){
+			var inputs = $("#checkboxContainer input");
+			for (var i=0; i<ledsToUse; i++) {
+				ledArrayBools[i] = $(inputs[i]).prop('checked');
+			}
+		}
+		
 		function getDataOf(cmdName) {
 			var ret = null;
 			switch (cmdName) {
@@ -191,7 +245,7 @@
 		// 
 		// EditableGrid の初期化
 		// 
-		window.onload = function(){
+		function initEditableGrid() {
 			editableGrid = new EditableGrid("DemoGridAttach"); 
 
 			// we build and load the metadata in Javascript
@@ -247,6 +301,33 @@
 				$("#code pre").html(src); // jQueryスタイルでコード簡易化 & 意図しないスタイルの適用を回避
 			}
 		}
+
+		//
+		// onload
+		//
+		$(document).ready(function(){
+			
+			// 方針: 
+			// 1) データモデルの初期化
+			// 2) GUI初期化(初期値設定)
+			// 3) GUI初期化(イベントの割当)
+			// 4) その他
+
+			// データモデル初期化: LED配列
+			for (var i=0; i<MAX_LED; i++) { ledArrayBools[i] = true; }
+			
+			// GUI初期化(初期値設定): 制御対象LED配列
+			updateViewLeds();
+			
+			// GUI初期化(イベント割当): LED総数
+			$("#sys_input0").change(updateTargetLeds);
+			// GUI初期化(イベント割当): 制御対象LED配列
+			// $("#checkboxContainer").change( function(){alert()} );
+			$("#checkboxContainer").change(updateLedArr);
+			
+			// そのほか
+			initEditableGrid();
+		});
 
 	</script>
 	
@@ -344,6 +425,7 @@
 				<tr><input type="checkbox" /></tr>
 				<tr>TODO: チェックボックスの加工用のUIも追加</tr>
 			</table>
+			<span id="checkboxContainer"><input type="checkbox" /></span>
 		</div>
 		
 	<!-------------->
