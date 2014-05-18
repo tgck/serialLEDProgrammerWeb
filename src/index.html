@@ -19,10 +19,14 @@
 	<script type="text/javascript" src="SrCmds.js"></script>
 	<script type="text/javascript" src="SrPlay.js"></script>
 	<script type="text/javascript" src="ledsim.js"></script>
+	<script type="text/javascript" src="datatable.js"></script>
 	
-	<!-- tables -->
-	<script src="editablegrid-2.0.1.js"></script>
-	<link rel="stylesheet" href="editablegrid-2.0.1.css" type="text/css" media="screen">
+	<!-- datatables -->
+	<link rel="stylesheet" type="text/css" href="./media/css/jquery.dataTables.css">
+	<style type="text/css" class="init"></style>
+	<script type="text/javascript" language="javascript" src="./media/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="./media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" language="javascript" src="./resources/syntax/shCore.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -96,69 +100,90 @@
 			return ret;
 		}
 
-		function insert() {
-		
-			// パラメータの取得
+		// 
+		// コマンドの取得
+		// 
+		function get_cmd() {
+			// mock用のパラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
 			var cmd = getDataOf(currentCommandName);
 			
-			alert(JSON.stringify(cmd)); // debug
-			
 			// レコード挿入
-			// TODO: - 選択行を元に新規レコードのIDを払い出す
-			//     : - 挿入するデータを演出パラメータから作成する(ひとまずJSON形式)
-			var values = editableGrid.getRowValues(0); // mock
 			var buffer = cmd.get_command();
 			var uint8s = new Uint8Array(buffer);
 
 			// Gridに表示するデータの追加
-			// TBD 本当に生データを表示することに意味があるのか？
-			//     Jsonの文字列を表示した方が良いのでは？と最近感じました。
-			values['Name'] = cmd.get_funcname();
-			values['C1'] = NumberToHexString(uint8s[0]);
-			values['C2'] = NumberToHexString(uint8s[1]);
-			values['C3'] = NumberToHexString(uint8s[2]);
-			values['C4'] = NumberToHexString(uint8s[3]);
-			values['D1'] = NumberToHexString(uint8s[4]);
-			values['D2'] = NumberToHexString(uint8s[5]);
-			values['D3'] = NumberToHexString(uint8s[6]);
-			values['D4'] = NumberToHexString(uint8s[7]);
-			values['Remarks'] = JSON.stringify(cmd);
+			var values = [];
+			values[0] = cmd.get_funcname();
+			values[1] = NumberToHexString(uint8s[0]);
+			values[2] = NumberToHexString(uint8s[1]);
+			values[3] = NumberToHexString(uint8s[2]);
+			values[4] = NumberToHexString(uint8s[3]);
+			values[5] = NumberToHexString(uint8s[4]);
+			values[6] = NumberToHexString(uint8s[5]);
+			values[7] = NumberToHexString(uint8s[6]);
+			values[8] = NumberToHexString(uint8s[7]);
+			values[9] = JSON.stringify(cmd);
 
-			// var values = makeNewRecordWith("#ControlCommands");
-			editableGrid.insert(0,1,values);
+			return values;
 		}
-<!--		
-		function add() {
 		
-			// mock用のパラメータの取得
-			var currentCommandName = $("#ControlCommands .current a").text();
-			alert("TODO: 'ADD' record func using param of[" + currentCommandName + "]");
-			var currentParams = getDataOf(currentCommandName);
+		// 
+		// 挿入
+		// TODO: datatablesは中途行に行追加する手段がない
+		//       http://stackoverflow.com/questions/22387948/add-a-row-after-the-selected-row-in-jquery-datatables
+		//       → ソート済みのdataモデルをロードし直すアプローチにする。
+		//          json のdatastoreを導入して、datatablesはViewに徹する
+		// 
+		function insert() {
+			// 選択行を取得
+			var rows = $('#example tr')
+			var selectedRow;
 			
-			// レコード追加
-			//	TODO: - 演出パラメータから挿入するデータを作成する(ひとまずJSON形式)
-			var values = editableGrid.getRowValues("0"); // mock
-			values['Name'] = 'an appended record.';      // mock
-			
-			// var values = makeNewRecordWith("#ControlCommands");
-			var nextId = editableGrid.getRowCount() + 1;
-			editableGrid.append(nextId, values);
+			if (! rows.hasClass('selected')){
+				alert("No record selected. Select any row first.");
+				return;
+			} else {
+				alert($(".selected").index())
+				// 行挿入
+				// TODO
+			}
 		}
+		// 
+		// 追加
+		// 
+		function add() {
+			var values = get_cmd();
+			var t = $('#example').DataTable();
+			var node = t.row.add( values ).draw().node(); // 表示して選択
+			$(node).click();
+		}
+
+		// 
+		// 上書き
+		// 
 		function replace() {
-			// あとで
-			alert("TODO: 'REPLACE'");
+			var values = get_cmd();
+			var t = $('#example').DataTable();
+			t.row('.selected').data( values ).draw();
 		}
+
+		// 
+		// 取得
+		// 
 		function get() {
 			// あとで
 			alert("TODO: 'GET'");
 		}
+		
+		// 
+		// 削除
+		// 
 		function dele() {
-			// No GUI, for debug.
-			var curId = editableGrid.getRowCount();
-			editableGrid.removeRow(curId);
+			var t = $('#example').DataTable();
+			t.row('.selected').remove().draw( false );
 		}
--->
+
 		// 
 		// mock: ペインごとに入力値を取得するサンプル関数
 		//
@@ -222,31 +247,7 @@
 			// オブジェクトの生成
 			return CmdLoopFromStr(str);
 		}
-<!--
-		// 
-		// EditableGrid の初期化
-		// 
-		function initEditableGrid() {
-			editableGrid = new EditableGrid("DemoGridAttach"); 
-
-			// we build and load the metadata in Javascript
-			editableGrid.load({ metadata: [
-				{ name: "Name", datatype: "string", editable: true },
-				{ name: "C1", datatype: "string", editable: true },
-				{ name: "C2", datatype: "string", editable: true },
-				{ name: "C3", datatype: "string", editable: true },
-				{ name: "C4", datatype: "string", editable: true },
-				{ name: "D1", datatype: "string", editable: true },
-				{ name: "D2", datatype: "string", editable: true },
-				{ name: "D3", datatype: "string", editable: true },
-				{ name: "D4", datatype: "string", editable: true }
-			]});
-
-			// then we attach to the HTML table and render it
-			editableGrid.attachToHTMLTable('htmlgrid');
-			editableGrid.renderGrid();
-		}
-//-->
+		
 		// 
 		// コードの生成処理（ひな形の取得）
 		// 
@@ -282,8 +283,6 @@
 				$("#code pre").html(src); // jQueryスタイルでコード簡易化 & 意図しないスタイルの適用を回避
 			}
 		}
-
-
 
 		//
 		// onload
@@ -328,7 +327,8 @@
 			
 			// そのほか
 			//   ※詳細未検討のため、いったんここに寄せてます
-			initEditableGrid();
+			// initEditableGrid();
+			initDataTable();
 		});
 
 	</script>
@@ -646,59 +646,53 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
 <!-- -- -- Middle            -- -- -- -->
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
-<div id="recordEdit" class="col_8 column">
-	<ul class="tabs">
-		<li class="first last current">
-			<a href="#edit">レコード操作</a>
-		</li>
-	</ul>
-	<div id="edit" class="tab-content clearfix" style="display: block; ">
-		<h6>データテーブル操作(dummy)</h6><!--あとでこのheadingは消す(開発中の便宜)-->
-		<table>
-			<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
-			<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
-			<tr><button onclick="replace()">上書</button></tr><!-- 選択しているレコードに上書き -->
-			<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
-		</table>
-	</div>
-</div>
-
 <div>
-	<div id="recordTable" class="col_8 column">
+	<div id="recordTable" class="col_12 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#edited">レコードリスト</a>
 			</li>
 		</ul>
 		<div id="edited" class="tab-content clearfix" style="display: block; ">
-			<h6>データテーブル(dummy)</h6><!--あとでこのheadingは消す(開発中の便宜)-->
-			
-			<!-- EditableGrid(http://www.editablegrid.net/)-->
-			<table id="htmlgrid" class="testgrid">
-				<tr>
-					<th>Name</th>
-					<th>C1</th>
-					<th>C2</th>
-					<th>C3</th>
-					<th>C4</th>
-					<th>D1</th>
-					<th>D2</th>
-					<th>D3</th>
-					<th>D4</th>
-					<th>Remarks</th>
-				</tr>
-				<tr id="0"><!--あとでこのレコードは消す(開発中の便宜)-->
-					<td>System</td>
-					<td>90</td>
-					<td>01</td>
-					<td>00</td>
-					<td>00</td>
-					<td>08</td>
-					<td>00</td>
-					<td>14</td>
-					<td>05</td>
-					<th>Sample</th>
-				</tr>
+			<h6>データテーブル</h6><!--あとでこのheadingは消す(開発中の便宜)-->
+			<table>
+				<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
+				<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
+				<tr><button onclick="replace()">上書</button></tr><!-- 選択しているレコードに上書き -->
+				<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
+				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->
+			</table>
+			<!-- DataTables -->
+			<table id="example" class="display" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>C1</th>
+						<th>C2</th>
+						<th>C3</th>
+						<th>C4</th>
+						<th>D1</th>
+						<th>D2</th>
+						<th>D3</th>
+						<th>D4</th>
+						<th>Remarks</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr>
+						<td>System</td>
+						<td>90</td>
+						<td>01</td>
+						<td>00</td>
+						<td>00</td>
+						<td>08</td>
+						<td>00</td>
+						<td>14</td>
+						<td>05</td>
+						<th>Sample</th>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	</div>
