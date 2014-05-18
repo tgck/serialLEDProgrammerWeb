@@ -473,7 +473,7 @@ function CmdSeesawFromStr(obj)
     val.push(parseInt(obj[i], 10));
   }
 
-  return new CmdBar(val[0], val[1], val[2], val[3]);
+  return new CmdSeesaw(val[0], val[1], val[2], val[3]);
 }
 
 // 名称の取得
