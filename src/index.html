@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="SrLib.js"></script>
 	<script type="text/javascript" src="SrCmds.js"></script>
 	<script type="text/javascript" src="SrPlay.js"></script>
+	<script type="text/javascript" src="ledsim.js"></script>
 	
 	<!-- tables -->
 	<script src="editablegrid-2.0.1.js"></script>
@@ -281,6 +282,8 @@
 				$("#code pre").html(src); // jQueryスタイルでコード簡易化 & 意図しないスタイルの適用を回避
 			}
 		}
+
+
 
 		//
 		// onload
@@ -708,6 +711,58 @@
 	<div class="col_8 column">
 		<ul class="tabs">
 			<li class="first last current">
+				<a href="#simulator">LEDシミュレーション</a>
+			</li>
+		</ul>
+		<button onclick="led_play()">再生</button>
+		<button onclick="led_stop()">停止</button>
+		<div id="simulator" class="tab-content clearfix" style="display: block; ">
+			<svg width="140%" height="32">
+				<!-- 影をつけるための定義 -->
+				<defs>
+					<filter id="fil" filterUnits="userSpaceOnUse" x="0" y="0" width="1400" height="32">
+						<feGaussianBlur stdDeviation="1"/>
+					</filter>
+				</defs>
+				<!-- LEDっぽい円の定義 -->
+				<circle id="LED1" cx="16" cy="18"  r="11"  filter="url(#fil)"/>
+				<circle id="LED2" cx="48" cy="18"  r="11"  filter="url(#fil)"/>
+				<circle id="LED3" cx="80" cy="18"  r="11"  filter="url(#fil)"/>
+				<circle id="LED4" cx="112" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED5" cx="144" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED6" cx="176" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED7" cx="208" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED8" cx="240" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED9" cx="272" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED10" cx="304" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED11" cx="336" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED12" cx="368" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED13" cx="400" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED14" cx="432" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED15" cx="464" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED16" cx="496" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED17" cx="528" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED18" cx="560" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED19" cx="592" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED20" cx="624" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED21" cx="656" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED22" cx="688" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED23" cx="720" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED24" cx="752" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED25" cx="784" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED26" cx="816" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED27" cx="848" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED28" cx="880" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED29" cx="912" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED30" cx="944" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED31" cx="976" cy="18" r="11"  filter="url(#fil)"/>
+				<circle id="LED32" cx="1008" cy="18" r="11"  filter="url(#fil)"/>
+			</svg>
+		</div>
+	</div>
+	<div class="col_8 column">
+		<ul class="tabs">
+			<li class="first last current">
 				<a href="#code">自動生成プログラムリスト</a>
 			</li>
 		</ul>
@@ -715,17 +770,6 @@
 			<button onclick="create_src()">生成</button>
 			<pre class="prettyprint">
 			</pre>
-		</div>
-	</div>
-	
-	<div class="col_8 column">
-		<ul class="tabs">
-			<li class="first last current">
-				<a href="#simulator">LEDシミュレーション</a>
-			</li>
-		</ul>
-		<div id="simulator" class="tab-content clearfix" style="display: block; ">
-			TODO: canvas?
 		</div>
 	</div>
 </div>
