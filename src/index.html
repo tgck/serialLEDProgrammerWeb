@@ -26,7 +26,13 @@
 	<style type="text/css" class="init"></style>
 	<script type="text/javascript" language="javascript" src="./media/js/jquery.js"></script>
 	<script type="text/javascript" language="javascript" src="./media/js/jquery.dataTables.js"></script>
-	<script type="text/javascript" language="javascript" src="./resources/syntax/shCore.js"></script>
+	
+	<!-- syntax highlighter -->
+	<script type="text/javascript" language="javascript" src="resources/syntax/shCore.js"></script>
+	<script type="text/javascript" language="javascript" src="resources/syntax/shBrushJScript.js"></script>
+	<script type="text/javascript" language="javascript" src="resources/syntax/shBrushCpp.js"></script>
+	<link href="resources/syntax/shCore.css" rel="stylesheet" type="text/css" />
+	<link href="resources/syntax/shThemeDefault.css" rel="stylesheet" type="text/css" />
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -252,7 +258,10 @@
 		// コードの生成処理（ひな形の取得）
 		// 
 		function create_src(){
-
+			// コード表示領域のリセット
+			$("#preWrapper").empty().html("<pre class='brush: js; toolbar: false'></pre>");
+			// $("#preWrapper").html("<pre class='brush: cpp; toolbar: false'></pre>");
+			
 			// ひな形の読出し（非同期）
 			var objXML;
 			reqXML = new XMLHttpRequest();
@@ -280,7 +289,8 @@
 				src = src.replaceAll("<", "&lt;");
 				src = src.replaceAll(">", "&gt;");
 
-				$("#code pre").html(src); // jQueryスタイルでコード簡易化 & 意図しないスタイルの適用を回避
+				$("#code pre").text(src);
+				SyntaxHighlighter.highlight();
 			}
 		}
 
@@ -329,6 +339,7 @@
 			//   ※詳細未検討のため、いったんここに寄せてます
 			// initEditableGrid();
 			initDataTable();
+			SyntaxHighlighter.all()
 		});
 
 	</script>
@@ -702,7 +713,7 @@
 <!-- -- -- Bottom            -- -- -- -->
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
 <div>
-	<div class="col_8 column">
+	<div class="col_10 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#simulator">LEDシミュレーション</a>
@@ -754,7 +765,7 @@
 			</svg>
 		</div>
 	</div>
-	<div class="col_8 column">
+	<div class="col_10 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#code">自動生成プログラムリスト</a>
@@ -762,12 +773,16 @@
 		</ul>
 		<div id="code" class="tab-content clearfix" style="display: block; ">
 			<button onclick="create_src()">生成</button>
-			<pre class="prettyprint">
-			</pre>
+			<div id="preWrapper">
+				<pre class="brush: c; toolbar: false;">
+				//
+				// ソースコードがここに表示されます
+				//
+				</pre>
+			</div>
 		</div>
 	</div>
 </div>
-
 
 </body>
 </html>

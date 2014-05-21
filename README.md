@@ -12,4 +12,5 @@ serialLEDProgrammer
 
 - jQuery-1.9.1
 - HTML Kickstart
-- editablegrid-2.0.1
+- [datatables](http://datatables.net/)
+- [Syntax Highlighter 3.0.83](http://alexgorbatchev.com/SyntaxHighlighter/)
