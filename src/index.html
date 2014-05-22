@@ -285,9 +285,6 @@
 				// キーワードの置換
 				var src = reqXML.responseText;
 				src = src.replace("[key_cmd_list]", playinfo.playsrc());
-				src = src.replaceAll("&", "&amp;");
-				src = src.replaceAll("<", "&lt;");
-				src = src.replaceAll(">", "&gt;");
 
 				$("#code pre").text(src);
 				SyntaxHighlighter.highlight();
