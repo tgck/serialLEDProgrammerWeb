@@ -29,7 +29,6 @@
 	
 	<!-- syntax highlighter -->
 	<script type="text/javascript" language="javascript" src="resources/syntax/shCore.js"></script>
-	<script type="text/javascript" language="javascript" src="resources/syntax/shBrushJScript.js"></script>
 	<script type="text/javascript" language="javascript" src="resources/syntax/shBrushCpp.js"></script>
 	<link href="resources/syntax/shCore.css" rel="stylesheet" type="text/css" />
 	<link href="resources/syntax/shThemeDefault.css" rel="stylesheet" type="text/css" />
@@ -716,9 +715,9 @@
 				<a href="#simulator">LEDシミュレーション</a>
 			</li>
 		</ul>
-		<button onclick="led_play()">再生</button>
-		<button onclick="led_stop()">停止</button>
 		<div id="simulator" class="tab-content clearfix" style="display: block; ">
+			<button onclick="led_play()">再生</button>
+			<button onclick="led_stop()">停止</button>
 			<svg width="140%" height="32">
 				<!-- 影をつけるための定義 -->
 				<defs>
