@@ -8,30 +8,33 @@
 	<meta name="description" content="" />
 	
 	<!-- CSS -->
-	<link rel="stylesheet" type="text/css" href="kickstart.css" media="all" />
-	<link rel="stylesheet" type="text/css" href="style.css" media="all" /> 
+	<link rel="stylesheet" type="text/css" href="lib/css/kickstart.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="lib/css/style.css" media="all" /> 
 	
 	<!-- Javascript -->
 	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
-	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="kickstart.js"></script>
-	<script type="text/javascript" src="SrLib.js"></script>
-	<script type="text/javascript" src="SrCmds.js"></script>
-	<script type="text/javascript" src="SrPlay.js"></script>
-	<script type="text/javascript" src="ledsim.js"></script>
-	<script type="text/javascript" src="datatable.js"></script>
+	<!--<script type="text/javascript" src="lib/js/jquery-1.9.1.min.js"></script>-->
+	<script type="text/javascript" language="javascript" src="lib/media/js/jquery.js"></script>
+	<script type="text/javascript" src="lib/js/kickstart.js"></script>
 	
 	<!-- datatables -->
-	<link rel="stylesheet" type="text/css" href="./media/css/jquery.dataTables.css">
+	<script type="text/javascript" src="lib/js/datatable.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/media/css/jquery.dataTables.css">
 	<style type="text/css" class="init"></style>
-	<script type="text/javascript" language="javascript" src="./media/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="./media/js/jquery.dataTables.js"></script>
-	
+	<script type="text/javascript" language="javascript" src="lib/media/js/jquery.dataTables.js"></script>
+
 	<!-- syntax highlighter -->
-	<script type="text/javascript" language="javascript" src="resources/syntax/shCore.js"></script>
-	<script type="text/javascript" language="javascript" src="resources/syntax/shBrushCpp.js"></script>
-	<link href="resources/syntax/shCore.css" rel="stylesheet" type="text/css" />
-	<link href="resources/syntax/shThemeDefault.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" language="javascript" src="lib/syntaxhighlighter_3.0.83/shCore.js"></script>
+	<script type="text/javascript" language="javascript" src="lib/syntaxhighlighter_3.0.83/shBrushCpp.js"></script>
+	<link href="lib/syntaxhighlighter_3.0.83/shCore.css" rel="stylesheet" type="text/css" />
+	<link href="lib/syntaxhighlighter_3.0.83/shThemeDefault.css" rel="stylesheet" type="text/css" />
+
+	<!-- this app -->
+	<script type="text/javascript" src="js/SrLib.js"></script>
+	<script type="text/javascript" src="js/SrCmds.js"></script>
+	<script type="text/javascript" src="js/SrPlay.js"></script>
+	<script type="text/javascript" src="js/ledsim.js"></script>
+	<script type="text/javascript" src="js/inputs.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -55,7 +58,7 @@
 		var ledArrayBools = Array(MAX_LED); // 制御対象LED
 		var ledsToUse = 8;
 		var defaults; // 画面入力項目の初期値
-				
+		
 		// 制御対象LEDの表示を更新する
 		function updateViewLeds(){
 			
@@ -188,131 +191,6 @@
 		function dele() {
 			var t = $('#example').DataTable();
 			t.row('.selected').remove().draw( false );
-		}
-
-		// 
-		// mock: ペインごとに入力値を取得するサンプル関数
-		//
-		function makeSystemRecord(){
-			// mock.
-			var str = [];
-			$("#list-1 input, #list-1 select").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdSystemFromStr(str);
-		}
-		function makeColorRecord(){
-			// mock.
-			var str = [];
-			$("#list-2 input, #list-2 select").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdColorFromStr(str);
-		}
-		function makeDelayRecord(){
-			// mock.
-			var str = [];
-			$("#list-3 input").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdWaitFromStr(str);
-		}
-		function makeShiftRecord(){
-			// mock.
-			var str = [];
-			$("#list-4 input, #list-4 select").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdShiftFromStr(str);
-		}
-		function makeRainbowRecord(){
-			var str = [];
-			$("#list-5 input, #list-5 select").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdRainbowFromStr(str);
-		}
-		function makeBarRecord(){
-			var str = [];
-			$("#list-6 input, #list-6 select").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdBarFromStr(str);
-		}
-		function makeSeesawRecord(){
-			var str = [];
-			$("#list-7 input").each(function(){str.push($(this).val())});
-
-			// オブジェクトの生成
-			return CmdSeesawFromStr(str);
-		}
-		function makeLoopRecord(){
-			var str = [];
-			str.push($("#lop_input0").val());
-
-			// オブジェクトの生成
-			return CmdLoopFromStr(str);
-		}
-		
-		//
-		// 項目への初期値セット
-		//
-		function restoreAll(){
-			restoreSystem();
-			restoreColor();  // FIXME
-			restoreDelay();
-			restoreShift();
-			restoreRainbow();
-			restoreBar(); // FIXME
-			restoreSeesaw(); // FIXME
-			restoreLoop();
-		}
-		function restoreSystem(){
-			var src = defaults.SLEDPDefaults.system;
-			var tgt = $("#list-1 input, #list-1 select");
-			restore(tgt, src);
-		}
-		function restoreColor(){
-			var src = defaults.SLEDPDefaults.color;
-			var tgt = $("#list-2 input, #list-2 select");
-			restore(tgt, src);
-		}
-		function restoreDelay(){
-			var src = defaults.SLEDPDefaults.delay;
-			var tgt = $("#list-3 input");
-			restore(tgt, src);
-		}
-		function restoreShift(){
-			var src = defaults.SLEDPDefaults.shift;
-			var tgt = $("#list-4 input, #list-4 select");
-			restore(tgt, src);
-		}
-		function restoreRainbow(){
-			var src = defaults.SLEDPDefaults.rainbow;
-			var tgt = $("#list-5 input, #list-5 select");
-			restore(tgt, src);
-		}
-		function restoreBar(){
-			var src = defaults.SLEDPDefaults.bar;
-			var tgt = $("#list-6 input, #list-6 select");
-			restore(tgt, src);
-		}
-		function restoreSeesaw(){
-			var src = defaults.SLEDPDefaults.seesaw;
-			var tgt = $("#list-7 input");
-			restore(tgt, src);
-		}
-		function restoreLoop(){
-			var src = defaults.SLEDPDefaults.loop;
-			var tgt = $("#list-8 input");
-			restore(tgt, src);
-		}
-		function restore(tgt, src){
-			var idx = 0;
-			for (var key in src) {
-				tgt.eq(idx).val(src[key]); // jQuery
-				idx++;
-			}
 		}
 		
 		// 
