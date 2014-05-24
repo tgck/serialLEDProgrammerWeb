@@ -14,7 +14,7 @@
 			"target" : 256
 		},
 		"delay"   : {
-            "time"   : 100 
+			"time"   : 100 
 		},
 		"shift"   : {
 			"dir"    : 0,
