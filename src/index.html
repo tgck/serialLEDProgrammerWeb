@@ -52,8 +52,9 @@
 		// LED総数
 		//	方針: モデルは固定長とし、ledsToUse(利用する長さ)と常にセットで管理する
 		var MAX_LED = 32;
-		var ledArrayBools = Array(MAX_LED);
+		var ledArrayBools = Array(MAX_LED); // 制御対象LED
 		var ledsToUse = 8;
+		var defaults; // 画面入力項目の初期値
 				
 		// 制御対象LEDの表示を更新する
 		function updateViewLeds(){
@@ -253,6 +254,67 @@
 			return CmdLoopFromStr(str);
 		}
 		
+		//
+		// 項目への初期値セット
+		//
+		function restoreAll(){
+			restoreSystem();
+			restoreColor();  // FIXME
+			restoreDelay();
+			restoreShift();
+			restoreRainbow();
+			restoreBar(); // FIXME
+			restoreSeesaw(); // FIXME
+			restoreLoop();
+		}
+		function restoreSystem(){
+			var src = defaults.SLEDPDefaults.system;
+			var tgt = $("#list-1 input, #list-1 select");
+			restore(tgt, src);
+		}
+		function restoreColor(){
+			var src = defaults.SLEDPDefaults.color;
+			var tgt = $("#list-2 input, #list-2 select");
+			restore(tgt, src);
+		}
+		function restoreDelay(){
+			var src = defaults.SLEDPDefaults.delay;
+			var tgt = $("#list-3 input");
+			restore(tgt, src);
+		}
+		function restoreShift(){
+			var src = defaults.SLEDPDefaults.shift;
+			var tgt = $("#list-4 input, #list-4 select");
+			restore(tgt, src);
+		}
+		function restoreRainbow(){
+			var src = defaults.SLEDPDefaults.rainbow;
+			var tgt = $("#list-5 input, #list-5 select");
+			restore(tgt, src);
+		}
+		function restoreBar(){
+			var src = defaults.SLEDPDefaults.bar;
+			var tgt = $("#list-6 input, #list-6 select");
+			restore(tgt, src);
+		}
+		function restoreSeesaw(){
+			var src = defaults.SLEDPDefaults.seesaw;
+			var tgt = $("#list-7 input");
+			restore(tgt, src);
+		}
+		function restoreLoop(){
+			var src = defaults.SLEDPDefaults.loop;
+			var tgt = $("#list-8 input");
+			restore(tgt, src);
+		}
+		function restore(tgt, src){
+			var idx = 0;
+			for (var key in src) {
+				tgt.eq(idx).val(src[key]); // jQuery
+				idx++;
+			}
+		}
+		
 		// 
 		// コードの生成処理（ひな形の取得）
 		// 
@@ -303,9 +365,21 @@
 
 			// データモデル初期化: LED配列
 			for (var i=0; i<MAX_LED; i++) { ledArrayBools[i] = true; }
-			
-			// GUI初期化(初期値設定): LED総数テキストフィールド
-			$("#sys_input0").val(8);
+
+			// GUI初期化(初期値設定): 入力フィールド
+			// ローカルストレージを参照して、値保存されてなければ設定ファイルから取得する
+			// TODO: ブラウザ終了時のlocalStorageへの値格納
+			if (localStorage.getItem("SLEDPDefaults") != null) {
+				defaults = localStorage.getItem("SLEDPDefaults");
+				// alert("restored defaults from defaults.json");
+			    restoreAll();
+			} else {
+				$.getJSON("defaults.json", function(json) {
+					defaults = json;
+					// alert("restored defaults from defaults.json");
+					restoreAll();
+				});
+			}
 			
 			// GUI初期化(初期値設定): 制御対象LEDチェックボックス
 			updateViewLeds();
@@ -333,7 +407,6 @@
 			
 			// そのほか
 			//   ※詳細未検討のため、いったんここに寄せてます
-			// initEditableGrid();
 			initDataTable();
 			SyntaxHighlighter.all()
 		});
