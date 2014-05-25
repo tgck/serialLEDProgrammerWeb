@@ -61,8 +61,7 @@
 		
 		// 制御対象LEDの表示を更新する
 		function updateViewLeds(){
-			
-			var ledLen = $("#sys_input0").val() || ledsToUse;
+			ledsToUse = $("#sys_input0").val() || ledToUse;
 			var wrapper = $("#checkboxContainer");
 			var aElem = "<input type='checkbox' />" 
 			var sp = "&nbsp;"
