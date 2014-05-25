@@ -241,9 +241,6 @@
 			// 3) GUI初期化(イベントの割当)
 			// 4) その他
 
-			// データモデル初期化: LED配列
-			for (var i=0; i<MAX_LED; i++) { ledArrayBools[i] = true; }
-
 			// GUI初期化(初期値設定): 入力フィールド
 			// ローカルストレージを参照して、値保存されてなければ設定ファイルから取得する
 			// TODO: ブラウザ終了時のlocalStorageへの値格納
@@ -251,16 +248,15 @@
 				defaults = localStorage.getItem("SLEDPDefaults");
 				// alert("restored defaults from defaults.json");
 			    restoreAll();
+				updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
 			} else {
 				$.getJSON("defaults.json", function(json) {
 					defaults = json;
 					// alert("restored defaults from defaults.json");
 					restoreAll();
+					updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
 				});
 			}
-			
-			// GUI初期化(初期値設定): 制御対象LEDチェックボックス
-			updateViewLeds();
 			
 			// GUI初期化(イベント割当): LED総数テキストフィールド
 			$("#sys_input0").change( function() {

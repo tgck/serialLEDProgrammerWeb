@@ -52,12 +52,12 @@ function makeLoopRecord(){
 //
 function restoreAll(){
 	restoreSystem();
-	restoreColor();  // FIXME
+	restoreColor();
 	restoreDelay();
 	restoreShift();
 	restoreRainbow();
-	restoreBar(); // FIXME
-	restoreSeesaw(); // FIXME
+	restoreBar();
+	restoreSeesaw();
 	restoreLoop();
 }
 function restoreSystem(){
@@ -68,8 +68,31 @@ function restoreSystem(){
 function restoreColor(){
 	// there are checkboxes..
 	var src = defaults.SLEDPDefaults.color;
-	var tgt = $("#list-2 input, #list-2 select");
-	restore(tgt, src);
+	var tgt1 = $("#list-2 input, #list-2 select").slice(0,5);
+	var tgt2 = $("#list-2 input, #list-2 select").filter(":checkbox");
+
+	// text fields and single checkboxes defaults
+	tgt1.eq(0).val(src.h);
+	tgt1.eq(1).val(src.s);
+	tgt1.eq(2).val(src.v);
+	tgt1.eq(3).prop('checked', src.tr);
+	tgt1.eq(4).prop('checked', src.off);
+	
+	// checkboxes array defaults
+	// ...read from json object : "11100000,00000000,00000000,0000000" // arrangement is as shown in the view
+	// ...fills:  ledArrayBools[MAX_LED] 
+	// ...updates view.
+	
+	var str = src.target;
+//	var str = "11110100000000000000000000000000"; 
+	
+	if (str.length != MAX_LED) {alert("invalid configuration [defaults.SLEDPDefaults.color.length]")}
+	for (var i=0; i<str.length; i++) {
+		if ("0" == str[i]) {ledArrayBools[i] = false;}
+		else {ledArrayBools[i] = true;}
+	}
+	
+	// don't forget updateViewLeds() !
 }
 function restoreDelay(){
 	var src = defaults.SLEDPDefaults.delay;
@@ -107,7 +130,6 @@ function restoreBar(){
 	for (var i=0; i<tgt2.length; i++) {
 		tgt2.eq(i).prop('checked', src.flag[i]);
 	}
-	
 }
 function restoreSeesaw(){
 	// text fields defaults
