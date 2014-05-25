@@ -243,6 +243,7 @@
 			// GUI初期化(初期値設定): 入力フィールド
 			// ローカルストレージを参照して、値保存されてなければ設定ファイルから取得する
 			// TODO: ブラウザ終了時のlocalStorageへの値格納
+			// TODO: getting file contents in local executing on Chrome.(same origin policy)
 			if (localStorage.getItem("SLEDPDefaults") != null) {
 				defaults = localStorage.getItem("SLEDPDefaults");
 				// alert("restored defaults from defaults.json");
