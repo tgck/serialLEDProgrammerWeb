@@ -32,7 +32,8 @@
 			"h"        : 0, 
 			"s"        : 255,
 			"v"        : 50,
-			"flag"     : 3,
+            "dir"      : 0,
+			"flag"     : [true, true],
 			"shitwait" : 100,
 			"showwait" : 50,
 			"loop"     : 3
@@ -41,7 +42,7 @@
 			"bright"  : 50,
 			"wait"    : 50,
 			"loop"    : 8,
-			"rgbflag" : 8
+			"rgbflag" : [true, false, false]
   		},
 		"loop"    : {
 			"count" : 10 

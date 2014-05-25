@@ -66,6 +66,7 @@ function restoreSystem(){
 	restore(tgt, src);
 }
 function restoreColor(){
+	// there are checkboxes..
 	var src = defaults.SLEDPDefaults.color;
 	var tgt = $("#list-2 input, #list-2 select");
 	restore(tgt, src);
@@ -86,14 +87,41 @@ function restoreRainbow(){
 	restore(tgt, src);
 }
 function restoreBar(){
+	// there are checkboxes..
+	
 	var src = defaults.SLEDPDefaults.bar;
-	var tgt = $("#list-6 input, #list-6 select");
-	restore(tgt, src);
+	var tgt1 = $("#list-6 input, #list-6 select").slice(0,4); // 4 elems
+	var tgt2 = $("#list-6 input, #list-6 select").slice(4,6); // 2 checkboxes
+	var tgt3 = $("#list-6 input, #list-6 select").slice(6,9); // 3 elems
+	
+	// text fields and pulldown defaults
+	tgt1.eq(0).val(src.h);
+	tgt1.eq(1).val(src.s);
+	tgt1.eq(2).val(src.v);
+	tgt1.eq(3).val(src.dir);
+	tgt3.eq(0).val(src.shitwait);
+	tgt3.eq(1).val(src.showwait);
+	tgt3.eq(2).val(src.loop);
+	
+	// checkboxes defaults
+	for (var i=0; i<tgt2.length; i++) {
+		tgt2.eq(i).prop('checked', src.flag[i]);
+	}
+	
 }
 function restoreSeesaw(){
+	// text fields defaults
 	var src = defaults.SLEDPDefaults.seesaw;
-	var tgt = $("#list-7 input");
-	restore(tgt, src);
+	var tgt1 = $("#list-7 input").not(":checkbox");
+	tgt1.eq(0).val(src.bright);
+	tgt1.eq(1).val(src.wait);
+	tgt1.eq(2).val(src.loop);
+
+	// checkboxes defaults
+	var tgt2 = $("#list-7 input").filter(":checkbox");
+	for (var i=0; i<tgt2.length; i++) {
+		tgt2.eq(i).prop('checked', src.rgbflag[i]);
+	}
 }
 function restoreLoop(){
 	var src = defaults.SLEDPDefaults.loop;
