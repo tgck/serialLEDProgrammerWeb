@@ -157,7 +157,7 @@ function CmdShiftFromStr(obj)
     val.push(parseInt(obj[i], 10));
   }
 
-  return new CmdShift(val[0], val[1], val[2], val[3]);
+  return new CmdShift(val[0], val[1], val[3], val[2]);
 }
 
 // 名称の取得
@@ -338,7 +338,7 @@ function CmdRainbowFromStr(obj)
     val.push(parseInt(obj[i], 10));
   }
 
-  return new CmdRainbow(val[0], val[1], val[2], val[3]);
+  return new CmdRainbow(val[1], val[0], val[2], val[3]);
 }
 
 // 名称の取得
@@ -400,13 +400,23 @@ function CmdBarFromJson(obj)
 // 文字配列からオブジェクトの生成
 function CmdBarFromStr(obj)
 {
-  // 数値変換
-  var val = [];
-  for(var i = 0 ; i < obj.length ; i++){
-    val.push(parseInt(obj[i], 10));
+  var h = parseInt(obj[0], 10);
+  var s = parseInt(obj[1], 10);
+  var v = parseInt(obj[2], 10);
+  var shiftwait = parseInt(obj[4], 10);
+  var showwait = parseInt(obj[5], 10);
+  var loop = parseInt(obj[6], 10);
+
+  // フラグ変換
+  var flag = parseInt(obj[3], 10);
+  if(Boolean(obj[7])){
+    flag |= 0x02;
+  }
+  if(Boolean(obj[8])){
+    flag |= 0x04;
   }
 
-  return new CmdBar(val[0], val[1], val[2], val[3], val[4], val[5], val[6]);
+  return new CmdBar(h, s, v, flag, shiftwait, showwait, loop);
 }
 
 // 名称の取得
@@ -467,13 +477,24 @@ function CmdSeesawFromJson(obj)
 // 文字配列からオブジェクトの生成
 function CmdSeesawFromStr(obj)
 {
-  // 数値変換
-  var val = [];
-  for(var i = 0 ; i < obj.length ; i++){
-    val.push(parseInt(obj[i], 10));
+  var bright = parseInt(obj[0], 10);
+  var wait = parseInt(obj[1], 10);
+  var loop = parseInt(obj[2], 10);
+
+  var rgbflag = 0;
+
+  // フラグ変換
+  if(Boolean(obj[3])){
+    rgbflag |= 0x01;
+  }
+  if(Boolean(obj[4])){
+    rgbflag |= 0x02;
+  }
+  if(Boolean(obj[5])){
+    rgbflag |= 0x04;
   }
 
-  return new CmdSeesaw(val[0], val[1], val[2], val[3]);
+  return new CmdSeesaw(bright, loop, wait, rgbflag);
 }
 
 // 名称の取得
@@ -535,13 +556,22 @@ function CmdColorFromJson(obj)
 // 文字配列からオブジェクトの生成
 function CmdColorFromStr(obj)
 {
-  // 数値変換
-  var val = [];
-  for(var i = 0 ; i < obj.length ; i++){
-    val.push(parseInt(obj[i], 10));
+  var h = parseInt(obj[0], 10);
+  var s = parseInt(obj[1], 10);
+  var v = parseInt(obj[2], 10);
+  var tr = Boolean(obj[3]);
+  var off = Boolean(obj[4]);
+
+  // ビット変換
+  var target = 0;
+  for(var i = obj.length - 1 ; i >= 5 ; i--){
+    target <<= 1;
+    if(Boolean(obj[i])){
+      target |= 0x1;
+    }
   }
 
-  return new CmdColor(val[0], val[1], val[2], val[3], val[4], val[5]);
+  return new CmdColor(h, s, v, target, tr, off);
 }
 
 // 名称の取得
