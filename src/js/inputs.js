@@ -13,7 +13,8 @@ function makeSystemRecord(){
 }
 function makeColorRecord(){
 	var str = [];
-	$("#list-2 input, #list-2 select").each(function(){str.push($(this).val())});
+	$("#list-2 input, #list-2 select").not(":checkbox").each(function(){str.push($(this).val())});
+	$("#list-2 input, #list-2 select").filter(":checkbox").each(function(){str.push($(this).is(':checked'))});
 	return CmdColorFromStr(str);
 }
 function makeDelayRecord(){
@@ -33,12 +34,15 @@ function makeRainbowRecord(){
 }
 function makeBarRecord(){
 	var str = [];
-	$("#list-6 input, #list-6 select").each(function(){str.push($(this).val())});
+	$("#list-6 input, #list-6 select").not(":checkbox").each(function(){str.push($(this).val())});
+	$("#list-6 input, #list-6 select").filter(":checkbox").each(function(){str.push($(this).is(':checked'))});
 	return CmdBarFromStr(str);
 }
 function makeSeesawRecord(){
 	var str = [];
-	$("#list-7 input").each(function(){str.push($(this).val())});
+//	$("#list-7 input").each(function(){str.push($(this).val())});
+	$("#list-7 input, #list-7 select").not(":checkbox").each(function(){str.push($(this).val())});
+	$("#list-7 input, #list-7 select").filter(":checkbox").each(function(){str.push($(this).is(':checked'))});
 	return CmdSeesawFromStr(str);
 }
 function makeLoopRecord(){
