@@ -1,4 +1,32 @@
 ////////////////////////////////////////////////////////////////////////////////
+// Jsonからオブジェクト生成
+////////////////////////////////////////////////////////////////////////////////
+function CmdFromJson(obj)
+{
+  if(obj.name == "system"){
+    return CmdSystemFromJson(obj);
+  }else if(obj.name == "wait"){
+    return CmdWaitFromJson(obj);
+  }else if(obj.name == "shift"){
+    return CmdShiftFromJson(obj);
+  }else if(obj.name == "loop"){
+    return CmdLoopFromJson(obj);
+  }else if(obj.name == "script"){
+    return CmdScriptFromJson(obj);
+  }else if(obj.name == "rainbow"){
+    return CmdRainbowFromJson(obj);
+  }else if(obj.name == "bar"){
+    return CmdBarFromJson(obj);
+  }else if(obj.name == "seesaw"){
+    return CmdSeesawFromJson(obj);
+  }else if(obj.name == "color"){
+    return CmdColorFromJson(obj);
+  }else{
+    return null;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // システムコマンド
 ////////////////////////////////////////////////////////////////////////////////
 function CmdSystem(ws2812, length, wait)
