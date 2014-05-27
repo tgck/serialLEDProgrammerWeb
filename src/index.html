@@ -28,6 +28,10 @@
 	<script type="text/javascript" language="javascript" src="lib/syntaxhighlighter_3.0.83/shBrushCpp.js"></script>
 	<link href="lib/syntaxhighlighter_3.0.83/shCore.css" rel="stylesheet" type="text/css" />
 	<link href="lib/syntaxhighlighter_3.0.83/shThemeDefault.css" rel="stylesheet" type="text/css" />
+	
+	<!-- colorpicker -->
+	<link rel="stylesheet" media="screen" type="text/css" href="lib/colorpicker/css/colorpicker.css" />
+	<script type="text/javascript" src="lib/colorpicker/js/colorpicker.js"></script>
 
 	<!-- this app -->
 	<script type="text/javascript" src="js/SrLib.js"></script>
@@ -229,6 +233,26 @@
 			}
 		}
 
+		function getPickerValue(){
+			var h = $(".colorpicker_hsb_h input").val();
+			var s = $(".colorpicker_hsb_s input").val();
+			var b = $(".colorpicker_hsb_b input").val();
+			
+			var tgt1 = $("#list-2 input, #list-2 select").slice(0,5);
+			tgt1.eq(0).val(h);
+			tgt1.eq(1).val(s);
+			tgt1.eq(2).val(b);
+		}
+		function initColorPicker(){
+			$("#colorpicker").ColorPicker({
+				flat: true,
+				onChange: function() { 
+					getPickerValue();
+					return false;
+				}
+			});
+		}
+
 		//
 		// onload
 		//
@@ -279,10 +303,23 @@
 				}
 			});
 			
+			// GUI初期化(イベント割当): ColorペインHSV
+			$("#col_input0").change( function() {
+				$(".colorpicker_hsb_h input").val($(this).val());
+			});
+			$("#col_input1").change( function() {
+				$(".colorpicker_hsb_s input").val($(this).val());
+			});
+			$("#col_input0").change( function() {
+				$(".colorpicker_hsb_b input").val($(this).val());
+			});
+
 			// そのほか
 			//   ※詳細未検討のため、いったんここに寄せてます
 			initDataTable();
-			SyntaxHighlighter.all()
+			SyntaxHighlighter.all();
+			initColorPicker();
+			
 		});
 
 	</script>
@@ -374,8 +411,12 @@
 			
 			<h6>制御対象のLED選択</h6>
 			<span id="checkboxContainer"></span>
+			
+			<hr>
+			<h6>Color Picker(配置場所暫定)</h6>
+			<p id="colorpicker"></p>
 		</div>
-		
+
 	<!-------------->
 	<!-- Delay ---->
 	<!-------------->
