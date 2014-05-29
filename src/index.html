@@ -63,7 +63,7 @@
 		var ledsToUse = 8;
 		var defaults; // 画面入力項目の初期値
 		
-		// 制御対象LEDの表示を更新する
+		// 制御対象LEDの表示を更新する (Colorペイン)
 		function updateViewLeds(){
 			ledsToUse = $("#sys_input0").val() || ledToUse;
 			var wrapper = $("#checkboxContainer");
@@ -85,6 +85,16 @@
 			for (var i=0; i< ledsToUse; i++) {
 				$( inputs[i]).prop('checked', ledArrayBools[i]);
 			}
+		}
+		// LEDシミュレーションにLED数変更を適用する
+		function updateSimLeds(){
+			for(var i=0; i<MAX_LED; i++) {
+				if (i<ledsToUse){ // circle を表示
+					$("#LED"+(i+1)).css('display','block');
+				}　else {	// circle 非表示
+					$("#LED"+(i+1)).css('display','none');
+				}
+			} 
 		}
 		
 		function getDataOf(cmdName) {
@@ -148,6 +158,8 @@
 		//          json のdatastoreを導入して、datatablesはViewに徹する
 		// 
 		function insert() {
+			alert("TODO: INSERT");
+			
 			// 選択行を取得
 			var rows = $('#example tr')
 			var selectedRow;
@@ -183,6 +195,7 @@
 		// 
 		// 取得
 		// 
+		// TODO
 		function get() {
 			// あとで
 			alert("TODO: 'GET'");
@@ -273,12 +286,14 @@
 				// alert("restored defaults from defaults.json");
 			    restoreAll();
 				updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
+				updateSimLeds();
 			} else {
 				$.getJSON("defaults.json", function(json) {
 					defaults = json;
 					// alert("restored defaults from defaults.json");
 					restoreAll();
 					updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
+					updateSimLeds();
 				});
 			}
 			
@@ -288,6 +303,7 @@
 				if ( inputVal > 0 && inputVal <= MAX_LED ) {
 					ledsToUse = inputVal;
 					updateViewLeds();
+					updateSimLeds();
 				} else {
 					alert("leds shuold be 1..32");
 					$(this).val(ledsToUse);
