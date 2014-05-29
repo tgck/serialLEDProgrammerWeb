@@ -39,6 +39,7 @@
 	<script type="text/javascript" src="js/SrPlay.js"></script>
 	<script type="text/javascript" src="js/ledsim.js"></script>
 	<script type="text/javascript" src="js/inputs.js"></script>
+	<script type="text/javascript" src="js/colorpick.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -233,26 +234,6 @@
 			}
 		}
 
-		function getPickerValue(){
-			var h = $(".colorpicker_hsb_h input").val();
-			var s = $(".colorpicker_hsb_s input").val();
-			var b = $(".colorpicker_hsb_b input").val();
-			
-			var tgt1 = $("#list-2 input, #list-2 select").slice(0,5);
-			tgt1.eq(0).val(h);
-			tgt1.eq(1).val(s);
-			tgt1.eq(2).val(b);
-		}
-		function initColorPicker(){
-			$("#colorpicker").ColorPicker({
-				flat: true,
-				onChange: function() { 
-					getPickerValue();
-					return false;
-				}
-			});
-		}
-
 		//
 		// onload
 		//
@@ -302,24 +283,15 @@
 					ledArrayBools[i] = $(inputs[i]).prop('checked');
 				}
 			});
-			
-			// GUI初期化(イベント割当): ColorペインHSV
-			$("#col_input0").change( function() {
-				$(".colorpicker_hsb_h input").val($(this).val());
-			});
-			$("#col_input1").change( function() {
-				$(".colorpicker_hsb_s input").val($(this).val());
-			});
-			$("#col_input0").change( function() {
-				$(".colorpicker_hsb_b input").val($(this).val());
-			});
 
+			// GUI初期化 : ColorPicker
+			initColorPicker();
+			
 			// そのほか
 			//   ※詳細未検討のため、いったんここに寄せてます
 			initDataTable();
 			SyntaxHighlighter.all();
-			initColorPicker();
-			
+			$("#tab1").click(); // ColorPickerの接続漏れ対策
 		});
 
 	</script>
@@ -334,14 +306,14 @@
 	===================================== -->
 	<!--<h4>Control Commands</h4>-->
 	<ul class="tabs">
-	<li><a href="#list-1">System</a></li>
-	<li><a href="#list-2">Color</a></li>
-	<li><a href="#list-3">Delay</a></li>
-	<li><a href="#list-4">Shift</a></li>
-	<li><a href="#list-5">Rainbow</a></li>
-	<li><a href="#list-6">Bar</a></li>
-	<li><a href="#list-7">Seesaw</a></li>
-	<li><a href="#list-8">Loop</a></li>
+	<li><a href="#list-1" id="tab1">System</a></li>
+	<li><a href="#list-2" id="tab2">Color</a></li>
+	<li><a href="#list-3" id="tab3">Delay</a></li>
+	<li><a href="#list-4" id="tab4">Shift</a></li>
+	<li><a href="#list-5" id="tab5">Rainbow</a></li>
+	<li><a href="#list-6" id="tab6">Bar</a></li>
+	<li><a href="#list-7" id="tab7">Seesaw</a></li>
+	<li><a href="#list-8" id="tab8">Loop</a></li>
 	</ul>
 
 	<!-------------->
@@ -657,7 +629,6 @@
 			</li>
 		</ul>
 		<div id="edited" class="tab-content clearfix" style="display: block; ">
-			<h6>データテーブル</h6><!--あとでこのheadingは消す(開発中の便宜)-->
 			<table>
 				<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
 				<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
@@ -690,7 +661,7 @@
 <!-- -- -- Bottom            -- -- -- -->
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
 <div>
-	<div class="col_10 column">
+	<div class="col_12 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#simulator">LEDシミュレーション</a>
@@ -742,7 +713,7 @@
 			</svg>
 		</div>
 	</div>
-	<div class="col_10 column">
+	<div class="col_12 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#code">自動生成プログラムリスト</a>
