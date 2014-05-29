@@ -1,18 +1,13 @@
 //
 // ColorPicker関連
 //
+
+// TODO : SVの変換を入れる(コマンドとUIのSVレンジがアンマッチ)
+
 var cp = $("#colorpicker");
 
 // UI上の値をColor/Barペインに反映する
-function fillPaneValWithUIVal(){
-	var h = $(".colorpicker_hsb_h input").val();
-	var s = $(".colorpicker_hsb_s input").val();
-	var b = $(".colorpicker_hsb_b input").val();
-	
-	$(".cp_linked_h").val(h);
-	$(".cp_linked_s").val(s);
-	$(".cp_linked_b").val(b);
-	
+function fillPaneValWithUIVal(){	
 	$(".cp_linked_h").val( $(".colorpicker_hsb_h input").val() );
 	$(".cp_linked_s").val( $(".colorpicker_hsb_s input").val() );
 	$(".cp_linked_b").val( $(".colorpicker_hsb_b input").val() );
