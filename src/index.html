@@ -18,7 +18,6 @@
 	<script type="text/javascript" src="lib/js/kickstart.js"></script>
 	
 	<!-- datatables -->
-	<script type="text/javascript" src="lib/js/datatable.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/media/css/jquery.dataTables.css">
 	<style type="text/css" class="init"></style>
 	<script type="text/javascript" language="javascript" src="lib/media/js/jquery.dataTables.js"></script>
@@ -28,6 +27,10 @@
 	<script type="text/javascript" language="javascript" src="lib/syntaxhighlighter_3.0.83/shBrushCpp.js"></script>
 	<link href="lib/syntaxhighlighter_3.0.83/shCore.css" rel="stylesheet" type="text/css" />
 	<link href="lib/syntaxhighlighter_3.0.83/shThemeDefault.css" rel="stylesheet" type="text/css" />
+	
+	<!-- colorpicker -->
+	<link rel="stylesheet" media="screen" type="text/css" href="lib/colorpicker/css/colorpicker.css" />
+	<script type="text/javascript" src="lib/colorpicker/js/colorpicker.js"></script>
 
 	<!-- this app -->
 	<script type="text/javascript" src="js/SrLib.js"></script>
@@ -35,6 +38,8 @@
 	<script type="text/javascript" src="js/SrPlay.js"></script>
 	<script type="text/javascript" src="js/ledsim.js"></script>
 	<script type="text/javascript" src="js/inputs.js"></script>
+	<script type="text/javascript" src="js/colorpick.js"></script>
+	<script type="text/javascript" src="js/datatable.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -59,7 +64,7 @@
 		var ledsToUse = 8;
 		var defaults; // 画面入力項目の初期値
 		
-		// 制御対象LEDの表示を更新する
+		// 制御対象LEDの表示を更新する (Colorペイン)
 		function updateViewLeds(){
 			ledsToUse = $("#sys_input0").val() || ledToUse;
 			var wrapper = $("#checkboxContainer");
@@ -81,6 +86,16 @@
 			for (var i=0; i< ledsToUse; i++) {
 				$( inputs[i]).prop('checked', ledArrayBools[i]);
 			}
+		}
+		// LEDシミュレーションにLED数変更を適用する
+		function updateSimLeds(){
+			for(var i=0; i<MAX_LED; i++) {
+				if (i<ledsToUse){ // circle を表示
+					$("#LED"+(i+1)).css('display','block');
+				}　else {	// circle 非表示
+					$("#LED"+(i+1)).css('display','none');
+				}
+			} 
 		}
 		
 		function getDataOf(cmdName) {
@@ -144,6 +159,8 @@
 		//          json のdatastoreを導入して、datatablesはViewに徹する
 		// 
 		function insert() {
+			alert("TODO: INSERT");
+			
 			// 選択行を取得
 			var rows = $('#example tr')
 			var selectedRow;
@@ -179,6 +196,7 @@
 		// 
 		// 取得
 		// 
+		// TODO
 		function get() {
 			// あとで
 			alert("TODO: 'GET'");
@@ -249,12 +267,14 @@
 				// alert("restored defaults from defaults.json");
 			    restoreAll();
 				updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
+				updateSimLeds();
 			} else {
 				$.getJSON("defaults.json", function(json) {
 					defaults = json;
 					// alert("restored defaults from defaults.json");
 					restoreAll();
 					updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
+					updateSimLeds();
 				});
 			}
 			
@@ -264,6 +284,7 @@
 				if ( inputVal > 0 && inputVal <= MAX_LED ) {
 					ledsToUse = inputVal;
 					updateViewLeds();
+					updateSimLeds();
 				} else {
 					alert("leds shuold be 1..32");
 					$(this).val(ledsToUse);
@@ -278,11 +299,15 @@
 					ledArrayBools[i] = $(inputs[i]).prop('checked');
 				}
 			});
+
+			// GUI初期化 : ColorPicker
+			initColorPicker();
 			
 			// そのほか
 			//   ※詳細未検討のため、いったんここに寄せてます
 			initDataTable();
-			SyntaxHighlighter.all()
+			SyntaxHighlighter.all();
+			$("#tab1").click(); // ColorPickerの接続漏れ対策
 		});
 
 	</script>
@@ -290,23 +315,23 @@
 <body>
 
 <div id="upper" class="clearfix">
-	<div id="ControlCommands" class="col_8">
+	<div id="ControlCommands" class="col_7">
 
 	<!-- ===================================== 
 		LISTS 
 	===================================== -->
 	<!--<h4>Control Commands</h4>-->
 	<ul class="tabs">
-	<li><a href="#list-1">System</a></li>
-	<li><a href="#list-2">Color</a></li>
-	<li><a href="#list-3">Delay</a></li>
-	<li><a href="#list-4">Shift</a></li>
-	<li><a href="#list-5">Rainbow</a></li>
-	<li><a href="#list-6">Bar</a></li>
-	<li><a href="#list-7">Seesaw</a></li>
-	<li><a href="#list-8">Loop</a></li>
+	<li><a href="#list-1" id="tab1">System</a></li>
+	<li><a href="#list-2" id="tab2">Color</a></li>
+	<li><a href="#list-3" id="tab3">Delay</a></li>
+	<li><a href="#list-4" id="tab4">Shift</a></li>
+	<li><a href="#list-5" id="tab5">Rainbow</a></li>
+	<li><a href="#list-6" id="tab6">Bar</a></li>
+	<li><a href="#list-7" id="tab7">Seesaw</a></li>
+	<li><a href="#list-8" id="tab8">Loop</a></li>
 	</ul>
-	
+
 	<!-------------->
 	<!-- system ---->
 	<!-------------->
@@ -374,8 +399,9 @@
 			
 			<h6>制御対象のLED選択</h6>
 			<span id="checkboxContainer"></span>
+
 		</div>
-		
+
 	<!-------------->
 	<!-- Delay ---->
 	<!-------------->
@@ -595,6 +621,17 @@
 			</table>
 		</div>
 	</div> <!-- "ControlCommands"-->
+
+	<div class="col_5 column">
+		<ul class="tabs">
+			<li class="first last current">
+				<a href="#pickerwrapper">ColorPicker</a>
+			</li>
+		</ul>
+		<div id="pickerwrapper" class="tab-content">
+			<p id="colorpicker"></p>
+		</div>
+		
 </div> <!-- upper -->
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -608,7 +645,6 @@
 			</li>
 		</ul>
 		<div id="edited" class="tab-content clearfix" style="display: block; ">
-			<h6>データテーブル</h6><!--あとでこのheadingは消す(開発中の便宜)-->
 			<table>
 				<tr><button onclick="insert()">挿入</button></tr><!-- カーソル位置にレコードを追加 -->
 				<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
@@ -641,7 +677,7 @@
 <!-- -- -- Bottom            -- -- -- -->
 <!-- -- -- -- -- -- -- -- -- -- -- -- -->
 <div>
-	<div class="col_10 column">
+	<div class="col_12 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#simulator">LEDシミュレーション</a>
@@ -693,7 +729,7 @@
 			</svg>
 		</div>
 	</div>
-	<div class="col_10 column">
+	<div class="col_12 column">
 		<ul class="tabs">
 			<li class="first last current">
 				<a href="#code">自動生成プログラムリスト</a>
