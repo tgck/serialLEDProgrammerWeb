@@ -7,6 +7,7 @@ function PlayInfo(cmd)
   this.index = 0;
   this.cmd = cmd;
   this.led = [];
+  this.ctrl = 0x00;
 
   // System
   this.ledlen = 0;
@@ -62,6 +63,9 @@ PlayInfo.prototype.play = function()
     var Cmd = this.cmd[pos];
     Cmd.play(this);
     
+    // 再生処理を実施したコントロールコードを保持（変化検出用）
+    this.ctrl = Cmd.ctrl;
+    
     // 次コマンドに遷移する場合は、時間を調整する
     if(pos != this.index){
       this.syswait_count = this.syswait;
@@ -86,36 +90,6 @@ PlayInfo.prototype.is_end = function()
   }
 }
 
-// ソースコード生成
-PlayInfo.prototype.playsrc = function()
-{
-  var key_cmd_list = '';
-
-  for(var i = 0 ; i < this.cmd.length ; i++)
-  {
-    ////////////////////////////////////////////////////////////////////////////
-    // jsonでコマンドの概要文字
-    ////////////////////////////////////////////////////////////////////////////
-    //var cmd_json = JSON.stringify(this.cmd[i]);
-    //key_cmd_list += "  // " + cmd_json + "\r\n";
-
-    ////////////////////////////////////////////////////////////////////////////
-    // バイト列
-    ////////////////////////////////////////////////////////////////////////////
-    key_cmd_list += "  { ";
-    var buff = this.cmd[i].get_command();
-    var uint8s = new Uint8Array(buff);
-    key_cmd_list += "0x" + ('0' + uint8s[0].toString(16)).slice(-2);
-    for(var j = 1 ; j < 8 ; j++)
-    {
-      key_cmd_list += ", 0x" + ('0' + uint8s[j].toString(16)).slice(-2);
-    }
-    key_cmd_list += " }, /* " + JSON.stringify(this.cmd[i]) + " */\r\n";
-  }
-  
-  return key_cmd_list;
-}
- 
 ////////////////////////////////////////////////////////////////////////////////
 // システムコマンドの再生
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,18 +103,19 @@ CmdSystem.prototype.play = function(playinfo)
 ////////////////////////////////////////////////////////////////////////////////
 // Waitコマンドの再生
 ////////////////////////////////////////////////////////////////////////////////
-CmdColor.prototype.play = function(playinfo)
+CmdWait.prototype.play = function(playinfo)
 {
-  if(playinfo.wait == 0)
+  // 初回判定
+  if(playinfo.ctrl != this.ctrl)
   {
-    playinfo.wait = this.wait;
+    // Webは遅いので待ち時間を1/10とする
+    playinfo.wait = this.wait/10;
   }
-  else
-  {
+
+  if(playinfo.wait <= 0){
+    playinfo.index++;
+  }else{
     playinfo.wait--;
-    if(playinfo.wait <= 0){
-      playinfo.index++;
-    }
   }
 }
 
@@ -149,14 +124,17 @@ CmdColor.prototype.play = function(playinfo)
 ////////////////////////////////////////////////////////////////////////////////
 CmdShift.prototype.play = function(playinfo)
 {
-  // シフト回数
-  if(playinfo.shift_count == 0 && playinfo.shift_wait == 0){
+  // 初回判定
+  if(playinfo.ctrl != this.ctrl)
+  {
     playinfo.shift_count = this.count;
+    playinfo.shift_wait = 0;
   }
 
   // Wait数
   if(playinfo.shift_wait <= 0){
-    playinfo.shift_wait = this.wait;
+    // Webは遅いので待ち時間を1/10とする
+    playinfo.shift_wait = this.wait/10;
     
     var rgb = 'rgb(0, 0, 0)';
 
@@ -169,7 +147,7 @@ CmdShift.prototype.play = function(playinfo)
       }
 
       // 左シフト
-      for(var j = 0 ; j <= playinfo.ledlen - 2 ; j++){
+      for(var j = 0, len = playinfo.ledlen - 2 ; j <= len ; j++){
         var mycolor = playinfo.led[j + 1].getAttribute("fill");
         playinfo.led[j].setAttribute("fill", mycolor);
       }
@@ -241,46 +219,48 @@ CmdScript.prototype.play = function(playinfo)
 ////////////////////////////////////////////////////////////////////////////////
 CmdRainbow.prototype.play = function(playinfo)
 {
-  // シフト回数
-  if(playinfo.rainbow_loop == 0 && playinfo.rainbow_wait == 0){
+  // 初回判定
+  if(playinfo.ctrl != this.ctrl)
+  {
     playinfo.rainbow_loop = this.loop;
+    playinfo.rainbow_wait = 0;
   }
 
   // Wait数
   if(playinfo.rainbow_wait <= 0){
-    playinfo.rainbow_wait = this.wait;
+    // Webは遅いので待ち時間を1/10とする
+    playinfo.rainbow_wait = this.wait/10;
 
     var j = this.loop - playinfo.rainbow_loop;
 
     // 虹色設定
     var work;
-    for(var i = 0 ; i < playinfo.ledlen ; i++){
+    for(var i = 0, len = playinfo.ledlen ; i < len ; i++){
       if(this.mode)
       {
-        work = Math.round(((i * 256 / playinfo.ledlen) + j)) & 0xFF;
+        work = Math.round((((i << 8) / playinfo.ledlen) + j)) & 0xFF;
       }
       else
       {
         work = (i + j) & 0xFF;
       }
       
-      
       var rgb = color_hsv(work, this.bright);
       var mycolor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
 
       playinfo.led[i].setAttribute("fill", mycolor);
     }
-    
+
     playinfo.rainbow_loop--;
+    
+    // 再生の終了判定
+    if(playinfo.rainbow_loop <= 0){
+      playinfo.index++;
+    }
   }
   else
   {
     playinfo.rainbow_wait--;
-    
-    // 再生の終了判定
-    if(playinfo.rainbow_wait <= 0 && playinfo.rainbow_loop <= 0){
-      playinfo.index++;
-    }
   }
 }
 
@@ -317,7 +297,8 @@ CmdBar.prototype.play = function(playinfo)
 //    console.log("start = " + playinfo.bar_start );
     
     if(this.shiftwait){
-      playinfo.bar_wait = this.shiftwait;
+      // Webは遅いので待ち時間を1/10とする
+      playinfo.bar_wait = this.shiftwait/10;
     }else{
       playinfo.bar_wait = 1;
     }
@@ -331,7 +312,9 @@ CmdBar.prototype.play = function(playinfo)
     
       if(playinfo.bar_start == playinfo.bar_end){
         if(this.showwait){
-          playinfo.bar_wait = this.showwait * 10;
+          // Webは遅いので待ち時間を1/10とする
+          // playinfo.bar_wait = this.showwait * 10;
+          playinfo.bar_wait = this.showwait;
         }else{
           playinfo.bar_wait = 1;
         }
@@ -363,7 +346,8 @@ CmdBar.prototype.play = function(playinfo)
     playinfo.bar_start += playinfo.bar_step;
 
     if(this.shiftwait){
-      playinfo.bar_wait = this.shiftwait;
+      // Webは遅いので待ち時間を1/10とする
+      playinfo.bar_wait = this.shiftwait/10;
     }else{
       playinfo.bar_wait = 1;
     }
@@ -377,7 +361,9 @@ CmdBar.prototype.play = function(playinfo)
     
       if(playinfo.bar_start == playinfo.bar_end){
         if(this.showwait){
-          playinfo.bar_wait = this.showwait * 10;
+          // Webは遅いので待ち時間を1/10とする
+          // playinfo.bar_wait = this.showwait * 10;
+          playinfo.bar_wait = this.showwait;
         }else{
           playinfo.bar_wait = 1;
         }
@@ -413,7 +399,7 @@ CmdSeesaw.prototype.play = function(playinfo)
 
     // 明るさ減衰量
     var brDec = this.bright / playinfo.ledlen;
-    for(var i = 0 ; i < playinfo.ledlen ; i++)
+    for(var i = 0, len = playinfo.ledlen ; i < len ; i++)
     {
       playinfo.seesaw_br[i] = Math.round(this.bright - (brDec * i));
       playinfo.seesaw_pos[i] = i;
@@ -422,7 +408,8 @@ CmdSeesaw.prototype.play = function(playinfo)
 
   // Wait数
   if(playinfo.seesaw_wait <= 0){
-    playinfo.seesaw_wait = this.wait;
+    // Webは遅いので待ち時間を1/10とする
+    playinfo.seesaw_wait = this.wait / 10;
 
     // データ転送
     for(var i = playinfo.ledlen - 1 ; i >= 0 ; i--)
