@@ -40,6 +40,7 @@
 	<script type="text/javascript" src="js/inputs.js"></script>
 	<script type="text/javascript" src="js/colorpick.js"></script>
 	<script type="text/javascript" src="js/datatable.js"></script>
+	<script type="text/javascript" src="js/createsrc.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -208,43 +209,6 @@
 		function dele() {
 			var t = $('#example').DataTable();
 			t.row('.selected').remove().draw( false );
-		}
-		
-		// 
-		// コードの生成処理（ひな形の取得）
-		// 
-		function create_src(){
-			// コード表示領域のリセット
-			$("#preWrapper").empty().html("<pre class='brush: js; toolbar: false'></pre>");
-			// $("#preWrapper").html("<pre class='brush: cpp; toolbar: false'></pre>");
-			
-			// ひな形の読出し（非同期）
-			var objXML;
-			reqXML = new XMLHttpRequest();
-			reqXML.onreadystatechange = create_src_view;
-			reqXML.open( "GET", "https://dl.dropboxusercontent.com/u/71549646/external/SrSrcBase.c", false );
-			reqXML.send( null );
-		}
-
-		// 
-		// コードの生成処理（コードの表示）
-		// 
-		function create_src_view()
-		{
-			if (reqXML.readyState == 4 && reqXML.status == 200)
-			{
-				// コード生成のオブジェクト（仮生成）TBD
-				var cmds = new CmdScript(1);
-				var cmdArray = [cmds];
-				var playinfo = new PlayInfo(cmdArray);
-
-				// キーワードの置換
-				var src = reqXML.responseText;
-				src = src.replace("[key_cmd_list]", playinfo.playsrc());
-
-				$("#code pre").text(src);
-				SyntaxHighlighter.highlight();
-			}
 		}
 
 		//
@@ -727,6 +691,7 @@
 				<circle id="LED31" cx="976" cy="18" r="11"  filter="url(#fil)"/>
 				<circle id="LED32" cx="1008" cy="18" r="11"  filter="url(#fil)"/>
 			</svg>
+			<h6>※コンピュータやブラウザの性能に左右されるため点灯周期やタイミングは異なりますのでご注意ください</h6>
 		</div>
 	</div>
 	<div class="col_12 column">
