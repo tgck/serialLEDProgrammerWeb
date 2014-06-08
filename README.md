@@ -3,7 +3,7 @@ serialLEDProgrammer For Web
 
 ### 概要
 
-フルカラーシリアルLED（WS2812系）を制御できるコントローラのための、LED演出コマンドをブラウザ上で作成できます。作成したLED演出をArduino用シールドや、開発したフルカラーLEDコントローラを介して演出することが可能になります。
+フルカラーシリアルLED（WS2812系）を制御するLED演出コマンドをブラウザ上で作成できます。作成したLED演出をArduino用シールドや、開発したフルカラーLEDコントローラを介して演出することが可能になります。
 
 ![Image](https://raw.githubusercontent.com/carcon999/serialLEDProgrammerWeb/master/image/title.jpg)
 
