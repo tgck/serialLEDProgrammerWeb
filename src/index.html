@@ -174,6 +174,8 @@
 				// 行挿入
 				// TODO
 			}
+			// 状態保存する
+			saveDataTable("def_data");
 		}
 		// 
 		// 追加
@@ -183,6 +185,9 @@
 			var t = $('#example').DataTable();
 			var node = t.row.add( values ).draw().node(); // 表示して選択
 			$(node).click();
+
+			// 状態保存する
+			saveDataTable("def_data");
 		}
 
 		// 
@@ -192,6 +197,9 @@
 			var values = get_cmd();
 			var t = $('#example').DataTable();
 			t.row('.selected').data( values ).draw();
+
+			// 状態保存する
+			saveDataTable("def_data");
 		}
 
 		// 
@@ -209,6 +217,9 @@
 		function dele() {
 			var t = $('#example').DataTable();
 			t.row('.selected').remove().draw( false );
+
+			// 状態保存する
+			saveDataTable("def_data");
 		}
 
 		//
