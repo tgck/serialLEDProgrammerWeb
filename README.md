@@ -1,12 +1,18 @@
-serialLEDProgrammer
+serialLEDProgrammer For Web
 ===================
 
 ### 概要
 
-フルカラーシリアルLED（WS2812系）を制御できるコントローラのための、演出シリアルコマンドを作成します。
+フルカラーシリアルLED（WS2812系）を制御できるコントローラのための、LED演出コマンドを作成します。
 
-コントローラーとオリジナルのWindowsアプリについては、@carcon999 さんのブログを参照してください。
--[フルカラーLEDコントローラ](http://blogs.yahoo.co.jp/carcon999/37853893.html)
+![Image](https://raw.githubusercontent.com/carcon999/serialLEDProgrammerWeb/master/image/title.jpg)
+
+
+コントローラーとオリジナルのWindowsアプリについては下記を参照してください。
+
+-[フルカラーLEDコントローラ](http://blogs.yahoo.co.jp/carcon999/37853893.html)  
+-[Arduino用評価シールド](http://blogs.yahoo.co.jp/carcon999/37942815.html)  
+-[頒布品（スイッチサイエンスさん）](http://www.switch-science.com/catalog/1739/)  
 
 ### 利用ライブラリ
 
