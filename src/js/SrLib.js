@@ -16,6 +16,7 @@ function hsv2rgb(h, s, v) {
         return [v, v, v]; //  Grayscale, just send back value
     }
 
+    h %= 360;
     h /= 60;   // Divide by 60 to get 6 sectors (0 to 5)
 
     var i = Math.floor(h);  // Round down to nearest integer

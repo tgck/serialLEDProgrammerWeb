@@ -235,6 +235,7 @@ CmdRainbow.prototype.play = function(playinfo)
 
     // 虹色設定
     var work;
+    var br = add_bright_offset(this.bright);
     for(var i = 0, len = playinfo.ledlen ; i < len ; i++){
       if(this.mode)
       {
@@ -245,7 +246,7 @@ CmdRainbow.prototype.play = function(playinfo)
         work = (i + j) & 0xFF;
       }
       
-      var rgb = color_hsv(work, this.bright);
+      var rgb = color_hsv(work, br);
       var mycolor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
 
       playinfo.led[i].setAttribute("fill", mycolor);
@@ -285,7 +286,7 @@ CmdBar.prototype.play = function(playinfo)
       playinfo.bar_step = 1;
     }
 
-    var rgb = hsv2rgb(this.h, this.s * 100 / 255, this.v * 100 / 255);
+    var rgb = hsv2rgb(this.h, this.s * 100 / 255, add_bright_offset(this.v) * 100 / 255);
     playinfo.bar_rgb = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
     playinfo.bar_status = 5;
 
@@ -398,10 +399,11 @@ CmdSeesaw.prototype.play = function(playinfo)
     playinfo.seesaw_loop = this.loop * ((playinfo.ledlen * 2) - 1) + 1;
 
     // 明るさ減衰量
-    var brDec = this.bright / playinfo.ledlen;
+    var br = add_bright_offset(this.bright);
+    var brDec = br / playinfo.ledlen;
     for(var i = 0, len = playinfo.ledlen ; i < len ; i++)
     {
-      playinfo.seesaw_br[i] = Math.round(this.bright - (brDec * i));
+      playinfo.seesaw_br[i] = Math.round(br - (brDec * i));
       playinfo.seesaw_pos[i] = i;
     }
   }
@@ -470,7 +472,7 @@ CmdSeesaw.prototype.play = function(playinfo)
 CmdColor.prototype.play = function(playinfo)
 {
   var flag = this.target;
-  var rgb = hsv2rgb(this.h, this.s * 100 / 255, this.v * 100 / 255);
+  var rgb = hsv2rgb(this.h, this.s * 100 / 255, add_bright_offset(this.v) * 100 / 255);
   var mycolor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
 
   for(var i = 0 ; i < 32 ; i++)
@@ -498,3 +500,16 @@ CmdColor.prototype.play = function(playinfo)
 
   playinfo.index++;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// 再生用の明るさオフセット加算処理
+// 明るさが低いと画面では見えない。
+////////////////////////////////////////////////////////////////////////////////
+function add_bright_offset(val){
+  var ret = val + 128;
+  if(ret > 255){
+    ret = 255;
+  }
+  return ret;
+}
+

@@ -340,7 +340,7 @@
 					</tr>
 					<tr>
 						<td>色相(H)</td>
-						<td><input id="col_input0" /><label class="col_2 column">0 - 359</label></td>
+						<td><input id="col_input0" /><label class="col_2 column">0 - 360</label></td>
 					</tr>
 					<tr>
 						<td>彩度(S)</td>
@@ -477,7 +477,7 @@
 				</thead>
 				<tr>
 					<td>色相(H)</td>
-					<td><input id="bar_input0" /><label class="col_2 column">0 - 359</label></td>
+					<td><input id="bar_input0" /><label class="col_2 column">0 - 360</label></td>
 				</tr>
 				<tr>
 					<td>彩度(S)</td>
@@ -616,6 +616,9 @@
 				<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
 				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->
 			</table>
+			<div>
+				<h8>リストの上から下の流れでLED演出します。※先頭行には、システム設定(System)パラメータを入れてください。</h8>
+			</div>
 			<!-- DataTables -->
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
@@ -691,7 +694,7 @@
 				<circle id="LED31" cx="976" cy="18" r="11"  filter="url(#fil)"/>
 				<circle id="LED32" cx="1008" cy="18" r="11"  filter="url(#fil)"/>
 			</svg>
-			<h6>※コンピュータやブラウザの性能に左右されるため点灯周期やタイミングは異なりますのでご注意ください</h6>
+			<h8>※コンピュータやブラウザの性能に左右されるため点灯周期やタイミングは異なりますのでご注意ください。<br>※明度はシミュレータ上で見やすいようにオフセットが加算されています。実際の明るさとは異なります。</h8>
 		</div>
 	</div>
 	<div class="col_12 column">
@@ -702,6 +705,10 @@
 		</ul>
 		<div id="code" class="tab-content clearfix" style="display: block; ">
 			<button onclick="create_src()">生成</button>
+		  <div>
+				<h8>※ソースコードは、自動更新されませんので必要なタイミングで生成ボタンを押下してください。</h8>
+				<h8>※全体もしくは、生成テーブル部分をコピーしてご利用ください。</h8>
+		  </div>
 			<div id="preWrapper">
 				<pre class="brush: c; toolbar: false;">
 				//

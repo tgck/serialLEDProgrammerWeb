@@ -9,15 +9,15 @@ var cp = $("#colorpicker");
 // UI上の値をColor/Barペインに反映する
 function fillPaneValWithUIVal(){	
 	$(".cp_linked_h").val( $(".colorpicker_hsb_h input").val() );
-	$(".cp_linked_s").val( $(".colorpicker_hsb_s input").val() );
-	$(".cp_linked_b").val( $(".colorpicker_hsb_b input").val() );
+	$(".cp_linked_s").val( Math.ceil($(".colorpicker_hsb_s input").val() * 2.55) );
+	$(".cp_linked_b").val( Math.ceil($(".colorpicker_hsb_b input").val() * 2.55) );
 }
 
 // Color/Barペイン上の値をUIに反映する
 function fillUIValWithPaneVal(){
 	$(".colorpicker_hsb_h input").val( $(".cp_linked_h").val() );
-	$(".colorpicker_hsb_s input").val( $(".cp_linked_s").val() );
-	$(".colorpicker_hsb_b input").val( $(".cp_linked_b").val() );
+	$(".colorpicker_hsb_s input").val( Math.ceil($(".cp_linked_s").val() / 2.55) );
+	$(".colorpicker_hsb_b input").val( Math.ceil($(".cp_linked_b").val() / 2.55) );
 }
 
 // 非表示
@@ -79,10 +79,10 @@ function bindColorPickerEvents(){
 		$(".colorpicker_hsb_h input").val($(".cp_linked_h").val());
 	});
 	$("#col_input1, #bar_input1").bind('change', function(){
-		$(".colorpicker_hsb_s input").val($(".cp_linked_s").val());
+		$(".colorpicker_hsb_s input").val( Math.ceil($(".cp_linked_s").val() / 2.55) );
 	});
 	$("#col_input2, #bar_input2").bind('change', function(){
-		$(".colorpicker_hsb_b input").val($(".cp_linked_b").val());
+		$(".colorpicker_hsb_b input").val( Math.ceil($(".cp_linked_b").val() / 2.55) );
 	});
 	// --- colorpicker end
 }
