@@ -27,6 +27,37 @@ function CmdFromJson(obj)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// 8バイト列からオブジェクト生成
+////////////////////////////////////////////////////////////////////////////////
+function CmdFromArray8(obj)
+{
+	var data = new Uint8Array(obj);
+
+  if(data[0] == 0x90){
+    return CmdSystemFromArray8(obj);
+  }else if(data[0] == 0x91){
+    return CmdWaitFromArray8(obj);
+  }else if(data[0] == 0x92){
+    return CmdShiftFromArray8(obj);
+  }else if(data[0] == 0x93){
+    return CmdLoopFromArray8(obj);
+// スクリプトコードは無視
+//  }else if(data[0] == 0x94){
+//    return CmdScriptFromArray8(obj);
+  }else if(data[0] == 0x95){
+    return CmdRainbowFromArray8(obj);
+  }else if(data[0] == 0x96){
+    return CmdBarFromArray8(obj);
+  }else if(data[0] == 0x97){
+    return CmdSeesawFromArray8(obj);
+  }else if((data[0] & 0xF0) == 0x80){
+    return CmdColorFromArray8(obj);
+  }else{
+    return null;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // システムコマンド
 ////////////////////////////////////////////////////////////////////////////////
 function CmdSystem(ws2812, length, wait)
@@ -44,12 +75,22 @@ function CmdSystemFromJson(obj)
 {
   if(obj.name == "system")
   {
-    return new CmdSystem(obj.ws2812, obj.length, obj.wait);
+    return new CmdSystem(obj.ledtype, obj.length, obj.wait);
   }
   else
   {
     return null;
   }
+}
+
+// バイト配列からオブジェクトの生成
+function CmdSystemFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+  // uint16のアクセス
+  var uint16s = new Uint16Array(obj);
+  return new CmdSystem(uint8s[1], uint16s[2], uint16s[3]);
 }
 
 // 文字配列からオブジェクトの生成
@@ -114,6 +155,14 @@ function CmdWaitFromJson(obj)
   }
 }
 
+// バイト配列からオブジェクトの生成
+function CmdWaitFromArray8(obj)
+{
+  // uint32のアクセス
+  var uint32s = new Uint32Array(obj);
+  return new CmdWait(uint32s[1]);
+}
+
 // 文字配列からオブジェクトの生成
 function CmdWaitFromStr(obj)
 {
@@ -174,6 +223,18 @@ function CmdShiftFromJson(obj)
   {
     return null;
   }
+}
+
+// バイト配列からオブジェクトの生成
+function CmdShiftFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  // uint16のアクセス
+  var uint16s = new Uint16Array(obj);
+
+  return new CmdShift(uint8s[1], uint8s[2], uint16s[2], uint16s[3]);
 }
 
 // 文字配列からオブジェクトの生成
@@ -238,6 +299,15 @@ function CmdLoopFromJson(obj)
   }
 }
 
+// バイト配列からオブジェクトの生成
+function CmdLoopFromArray8(obj)
+{
+  // uint32のアクセス
+  var uint32s = new Uint32Array(obj);
+
+  return new CmdLoop(uint32s[1]);
+}
+
 // 文字配列からオブジェクトの生成
 function CmdLoopFromStr(obj)
 {
@@ -298,6 +368,15 @@ function CmdScriptFromJson(obj)
   }
 }
 
+// バイト配列からオブジェクトの生成
+function CmdScriptFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  return new CmdScript(uint8s[1]);
+}
+
 // 文字配列からオブジェクトの生成
 function CmdScriptFromStr(obj)
 {
@@ -355,6 +434,18 @@ function CmdRainbowFromJson(obj)
   {
     return null;
   }
+}
+
+// バイト配列からオブジェクトの生成
+function CmdRainbowFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  // uint32のアクセス
+  var uint32s = new Uint32Array(obj);
+
+  return new CmdRainbow(uint8s[1], uint8s[2], uint8s[3], uint32s[1]);
 }
 
 // 文字配列からオブジェクトの生成
@@ -423,6 +514,17 @@ function CmdBarFromJson(obj)
   {
     return null;
   }
+}
+
+// バイト配列からオブジェクトの生成
+function CmdBarFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  var hsv = rgb2hsv(uint8s[1], uint8s[2], uint8s[3]);
+
+  return new CmdBar(hsv.h, hsv.s, hsv.v, uint8s[4], uint8s[5], uint8s[6], uint8s[7]);
 }
 
 // 文字配列からオブジェクトの生成
@@ -500,6 +602,18 @@ function CmdSeesawFromJson(obj)
   {
     return null;
   }
+}
+
+// バイト配列からオブジェクトの生成
+function CmdSeesawFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  // uint32のアクセス
+  var uint32s = new Uint32Array(obj);
+
+  return new CmdSeesaw(uint8s[1], uint8s[2], uint8s[3], uint32s[1]);
 }
 
 // 文字配列からオブジェクトの生成
@@ -580,6 +694,24 @@ function CmdColorFromJson(obj)
     return null;
   }
 }
+
+// バイト配列からオブジェクトの生成
+function CmdColorFromArray8(obj)
+{
+  // uint8のアクセス
+  var uint8s = new Uint8Array(obj);
+
+  var tr = ((uint8s[0] & 0x08) == 0);
+  var off = ((uint8s[0] & 0x04) != 0);
+  
+  var hsv = rgb2hsv(uint8s[1], uint8s[2], uint8s[3]);
+
+  // uint32のアクセス
+  var uint32s = new Uint32Array(obj);
+
+  return new CmdColor(hsv.h, hsv.s, hsv.v, uint32s[1], tr, off);
+}
+
 
 // 文字配列からオブジェクトの生成
 function CmdColorFromStr(obj)

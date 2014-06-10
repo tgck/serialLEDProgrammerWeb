@@ -51,16 +51,18 @@ function loadDataTable(keyName) {
 	// localStorageが利用できる場合のみロードする。
 	if (window.localStorage) {
 		var json_text = localStorage.getItem(keyName);
+		// json -> オブジェクト化
+		var obj = JSON.parse(json_text);
 		
-		if(json_text != null){
-			// テーブルからコマンドオブジェクトを生成する
-			var oTable = $('#example').dataTable();
-			// クリア
-			oTable.fnClearTable(false);
-			// json -> オブジェクト化
-			var obj = JSON.parse(json_text);
-			// テーブル追加
-			oTable.fnAddData(obj, true);
+		if(obj.length != 0){
+			if(json_text != null){
+				// テーブルからコマンドオブジェクトを生成する
+				var oTable = $('#example').dataTable();
+				// クリア
+				oTable.fnClearTable(false);
+				// テーブル追加
+				oTable.fnAddData(obj, true);
+			}
 		}
 	}
 }

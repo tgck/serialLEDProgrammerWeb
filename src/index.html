@@ -41,6 +41,7 @@
 	<script type="text/javascript" src="js/colorpick.js"></script>
 	<script type="text/javascript" src="js/datatable.js"></script>
 	<script type="text/javascript" src="js/createsrc.js"></script>
+	<script type="text/javascript" src="js/importtbl.js"></script>
 	
 	<style>
 		body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
@@ -93,7 +94,7 @@
 			for(var i=0; i<MAX_LED; i++) {
 				if (i<ledsToUse){ // circle を表示
 					$("#LED"+(i+1)).css('display','block');
-				}　else {	// circle 非表示
+				}else {	// circle 非表示
 					$("#LED"+(i+1)).css('display','none');
 				}
 			} 
@@ -131,25 +132,7 @@
 			// mock用のパラメータの取得
 			var currentCommandName = $("#ControlCommands .current a").text();
 			var cmd = getDataOf(currentCommandName);
-			
-			// レコード挿入
-			var buffer = cmd.get_command();
-			var uint8s = new Uint8Array(buffer);
-
-			// Gridに表示するデータの追加
-			var values = [];
-			values[0] = cmd.get_funcname();
-			values[1] = NumberToHexString(uint8s[0]);
-			values[2] = NumberToHexString(uint8s[1]);
-			values[3] = NumberToHexString(uint8s[2]);
-			values[4] = NumberToHexString(uint8s[3]);
-			values[5] = NumberToHexString(uint8s[4]);
-			values[6] = NumberToHexString(uint8s[5]);
-			values[7] = NumberToHexString(uint8s[6]);
-			values[8] = NumberToHexString(uint8s[7]);
-			values[9] = JSON.stringify(cmd);
-
-			return values;
+			return get_cmd_values(cmd);
 		}
 		
 		// 
@@ -244,7 +227,7 @@
 				updateViewLeds(); // GUI初期化(初期値設定): 制御対象LEDチェックボックス
 				updateSimLeds();
 			} else {
-				$.getJSON("defaults.json", function(json) {
+				$.getJSON("https://dl.dropboxusercontent.com/u/71549646/external/defaults.json", function(json) {
 					defaults = json;
 					// alert("restored defaults from defaults.json");
 					restoreAll();
@@ -284,7 +267,6 @@
 			SyntaxHighlighter.all();
 			$("#tab1").click(); // ColorPickerの接続漏れ対策
 		});
-
 	</script>
 </head>
 <body>
@@ -726,6 +708,23 @@
 				// ソースコードがここに表示されます
 				//
 				</pre>
+			</div>
+		</div>
+	</div>
+
+	<div class="col_13 column">
+		<ul class="tabs">
+			<li class="first last current">
+				<a href="#import">インポート</a>
+			</li>
+		</ul>
+		<div id="import" class="tab-content clearfix" style="display: block; ">
+			<button onclick="import_tbl()">インポート</button>
+			<div>
+				<h8>※led_play_listのテーブル名を抜き出してインポートします。詳細なチェックは行っていません。16進数表記(0xAA,0xBB…)としてください。</h8>
+			</div>
+			<div>
+				<textarea id="importtext" cols="240" rows="20" placeholder="テーブル(led_play_list)を張り付けてください"></textarea>
 			</div>
 		</div>
 	</div>
