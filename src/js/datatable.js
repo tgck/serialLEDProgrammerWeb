@@ -1,10 +1,24 @@
 function initDataTable() {
 
 	var table = $('#example').dataTable({
+		"order" : [[0, "asc"]],
+		"columns" : [
+			{"name":"hidden-index",  "sortable" : true },
+			{"name":"Name", "sortable" : false },
+			{"name":"C1", "sortable" : false },
+			{"name":"C2", "sortable" : false },
+			{"name":"C3", "sortable" : false },
+			{"name":"C4", "sortable" : false },
+			{"name":"D1", "sortable" : false },
+			{"name":"D2", "sortable" : false },
+			{"name":"D3", "sortable" : false },
+			{"name":"D4", "sortable" : false },
+			{"name":"Remarks", "sortable" : false }
+		],
 		"bPaginate": true,
 		"bLengthChange": false,
 		"bFilter": false,
-		"bSort": false,
+//		"bSort": false,
 		"bInfo": false,
 		"bAutoWidth": false,
 		"scrollY": false, // false: スクロールを許可しない
