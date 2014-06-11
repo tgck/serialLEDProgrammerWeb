@@ -22,3 +22,10 @@ Array.prototype.arsort = function(key) {
         return (a[key] < b[key]) ? 1 : -1;
     });
 }
+
+// sort by number
+Array.prototype.nsort = function() {
+  this.sort(function(a, b) {
+    return (parseInt(a) > parseInt(b)) ? 1 : -1;
+  });
+}

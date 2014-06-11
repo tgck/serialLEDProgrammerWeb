@@ -176,6 +176,29 @@
 			
 			return maxIndex + 10; // 10 is a number to keep space between records.
 		}
+		
+		// remap the indices
+		function remap() {
+			var api = $('#example').DataTable();
+			
+			// remap the indexes
+			var data = api.data();
+			xsort(data, 0, 1);
+			
+			var t = $('#example').dataTable();
+
+			var arr = []; // 順位算出用の配列
+			for (var i=0; i<data.length; i++){
+				arr.push(t.fnGetData(i, 0));
+			}
+			arr.nsort();
+			alert(arr);
+			for (var i=0; i<data.length; i++ ){
+				var searchTarget = t.fnGetData(i, 0);
+				var newIndex = arr.indexOf(searchTarget);
+				t.fnUpdate( 10*newIndex, i , 0 ); // "10" is a number to keep space between records.
+			}
+		}
 
 		// 
 		// 挿入
@@ -186,16 +209,22 @@
 		// 
 		var data = [];
 		function insert() {
-			alert("WORKING: INSERT");
+			// alert("WORKING: INSERT");
 			
 			var api = $('#example').DataTable();
+			
 			var targetRow = $('tr.selected');
+			if ( targetRow.length == 0 ) { 
+				alert("挿入したい行を選択してください。");
+				return
+			}
+
 			var rowdata = api.row(targetRow).data();
 			
 			// make the new record.
 			var rowToInsert = [].concat(rowdata);
 			rowToInsert[0] = rowToInsert[0] + 1;
-			alert ("row to insert : " +rowToInsert);
+			alert ("row to insert : " + rowToInsert);
 			
 			// add the new row.
 			api.row.add(rowToInsert).draw();
@@ -205,24 +234,8 @@
 			api.$('tr').eq(selectedIndexBefore).removeClass('selected');
 			api.$('tr').eq(selectedIndexBefore+1).addClass('selected');
 			
-			// remap the indexes
-			data = api.data();
-			xsort(data, 0, 1);
-
-			// do update.
-			var t = $('#example').dataTable();
-
-			var arr = []; // 順位算出用の配列
-			for (var i=0; i<data.length; i++){
-				arr.push(t.fnGetData(i, 0));
-			}
-			arr.sort(); // sort asc with column0
-
-			for (var i=0; i<data.length; i++ ){
-				var searchTarget = t.fnGetData(i, 0);
-				var newIndex = arr.indexOf(searchTarget);
-				t.fnUpdate( 10*newIndex, i , 0 ); // "10" is a number to keep space between records.
-			}
+			// remap
+			remap();
 
 			// 状態保存する
 			saveDataTable("def_data");
@@ -232,10 +245,14 @@
 		// 
 		function add() {
 			var values = [ issueNewIndex() ].concat( get_cmd() );
-			var t = $('#example').DataTable();
-			var node = t.row.add( values ).draw().node(); // 表示して選択
+			alert("row to add : " + values);
+			
+			var api = $('#example').DataTable();
+			var node = api.row.add( values ).draw().node(); // 表示して選択
 			$(node).click();
 
+			// NOTE: no need to remap
+			
 			// 状態保存する
 			saveDataTable("def_data");
 		}
@@ -244,7 +261,7 @@
 		// 上書き
 		// 
 		function replace() {
-			var values = get_cmd();
+			var values = [ issueNewIndex() ].concat(get_cmd());
 			var t = $('#example').DataTable();
 			t.row('.selected').data( values ).draw();
 
@@ -269,6 +286,15 @@
 			t.row('.selected').remove().draw( false );
 
 			// 状態保存する
+			saveDataTable("def_data");
+		}
+
+		// 
+		// 全削除
+		// 
+		function truncate(){
+			var t = $('#example').dataTable();
+			t.fnClearTable(true);
 			saveDataTable("def_data");
 		}
 
@@ -333,6 +359,7 @@
 			initDataTable();
 			SyntaxHighlighter.all();
 			$("#tab1").click(); // ColorPickerの接続漏れ対策
+		
 		});
 
 	</script>
