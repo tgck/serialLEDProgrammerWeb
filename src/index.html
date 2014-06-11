@@ -155,18 +155,18 @@
 
 		//
 		// get the new Index of the datatable
+		// インデックスの払い出し(末尾)
 		//
 		function issueNewIndex() {
 			var api = $('#example').DataTable();
 
-			// get the maximum index.
 			var data = api.data();
 		
 			if (data.length == 0) {
-				return 0; // index for the first record.
+				return 0; // レコードなしの場合、0
 			} 
 			
-			// there are one or more records.
+			// 1件以上レコードが存在する場合
 			var t = $('#example').dataTable();	
 			var arr = [];
 			for (var i=0; i<data.length; i++){
@@ -177,11 +177,32 @@
 			return maxIndex + 10; // 10 is a number to keep space between records.
 		}
 		
-		// remap the indices
-		function remap() {
+		//
+		// get the next Index of the selected row
+		// インデックスの払い出し(選択行の後)
+		//
+		function issueNextIndex() {
 			var api = $('#example').DataTable();
 			
-			// remap the indexes
+			// 行選択されていない場合は何もせず終了
+			var selectedRow = $('tr.selected');
+			if ( selectedRow.length == 0 ) { 
+				alert("挿入したい行を選択してください。");
+				return;
+			}
+			
+			// レコード作成と追加
+			var currentRowData = api.row(selectedRow).data();
+			var currentIndex = parseInt(currentRowData[0]);
+			return currentIndex + 1;
+		}
+		
+		//
+		// remap the indices
+		// テーブルインデックスを振りなおす(挿入のあとに利用する)
+		//
+		function remap() {
+			var api = $('#example').DataTable();
 			var data = api.data();
 			xsort(data, 0, 1);
 			
@@ -192,42 +213,28 @@
 				arr.push(t.fnGetData(i, 0));
 			}
 			arr.nsort();
-			alert(arr);
 			for (var i=0; i<data.length; i++ ){
 				var searchTarget = t.fnGetData(i, 0);
 				var newIndex = arr.indexOf(searchTarget);
 				t.fnUpdate( 10*newIndex, i , 0 ); // "10" is a number to keep space between records.
 			}
 		}
-
 		// 
 		// 挿入
 		// 
 		function insert() {
 			var api = $('#example').DataTable();
 			
-			var targetRow = $('tr.selected');
-			if ( targetRow.length == 0 ) { 
-				alert("挿入したい行を選択してください。");
-				return;
-			}
-			
-			var currentRow = api.row(targetRow).data();
-			var currentIndex = parseInt(currentRow[0]);
-
-			// make the new record.
-			var rowToInsert = [ (currentIndex + 1) ].concat( get_cmd() );
-			// alert ("row to insert : " + rowToInsert);
-			
-			// add the new row.
+			// 新規行の追加
+			var rowToInsert = [ issueNextIndex() ].concat( get_cmd() );
 			api.row.add(rowToInsert).draw();
 			
-			// reselect 
+			// 行の再選択
 			var selectedIndexBefore = $('tr.selected').index();
 			api.$('tr').eq(selectedIndexBefore).removeClass('selected');
 			api.$('tr').eq(selectedIndexBefore+1).addClass('selected');
 			
-			// remap
+			// インデックス振り直し
 			remap();
 
 			// 状態保存する
@@ -237,10 +244,9 @@
 		// 追加
 		// 
 		function add() {
-			var values = [ issueNewIndex() ].concat( get_cmd() );
-			//alert("row to add : " + values);
-			
 			var api = $('#example').DataTable();
+			
+			var values = [ issueNewIndex() ].concat( get_cmd() );
 			var node = api.row.add( values ).draw().node(); // 表示して選択
 			$(node).click();
 
@@ -253,14 +259,12 @@
 		// 
 		// 上書き
 		// 
-		function replace() {
-			var values = get_cmd();
-			
+		function replace() {			
 			var api = $('#example').DataTable();
-			var currentRow = api.row('.selected').data();
-			var newRow = [currentRow[0]].concat(values);
 			
-			api.row('.selected').data(newRow).draw();
+			var currentRow = api.row('.selected').data()
+			var values = [ currentRow[0]].concat( get_cmd() );
+			api.row('.selected').data(values).draw();
 
 			// 状態保存する
 			saveDataTable("def_data");
@@ -279,8 +283,8 @@
 		// 削除
 		// 
 		function dele() {
-			var t = $('#example').DataTable();
-			t.row('.selected').remove().draw( false );
+			var api = $('#example').DataTable();
+			api.row('.selected').remove().draw( false );
 
 			// 状態保存する
 			saveDataTable("def_data");
