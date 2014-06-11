@@ -202,15 +202,8 @@
 
 		// 
 		// 挿入
-		// TODO: datatablesは中途行に行追加する手段がない
-		//       http://stackoverflow.com/questions/22387948/add-a-row-after-the-selected-row-in-jquery-datatables
-		//       → ソート済みのdataモデルをロードし直すアプローチにする。
-		//          json のdatastoreを導入して、datatablesはViewに徹する
 		// 
-		var data = [];
 		function insert() {
-			// alert("WORKING: INSERT");
-			
 			var api = $('#example').DataTable();
 			
 			var targetRow = $('tr.selected');
@@ -218,13 +211,13 @@
 				alert("挿入したい行を選択してください。");
 				return;
 			}
-
-			var rowdata = api.row(targetRow).data();
 			
+			var currentRow = api.row(targetRow).data();
+			var currentIndex = parseInt(currentRow[0]);
+
 			// make the new record.
-			var rowToInsert = [].concat(rowdata);
-			rowToInsert[0] = rowToInsert[0] + 1;
-			alert ("row to insert : " + rowToInsert);
+			var rowToInsert = [ (currentIndex + 1) ].concat( get_cmd() );
+			// alert ("row to insert : " + rowToInsert);
 			
 			// add the new row.
 			api.row.add(rowToInsert).draw();
@@ -245,7 +238,7 @@
 		// 
 		function add() {
 			var values = [ issueNewIndex() ].concat( get_cmd() );
-			alert("row to add : " + values);
+			//alert("row to add : " + values);
 			
 			var api = $('#example').DataTable();
 			var node = api.row.add( values ).draw().node(); // 表示して選択

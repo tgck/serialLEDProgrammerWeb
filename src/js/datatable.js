@@ -3,7 +3,7 @@ function initDataTable() {
 	var table = $('#example').dataTable({
 		"order" : [[0, "asc"]],
 		"columns" : [
-			{"name":"hidden-index",  "sortable" : true },
+			{"name":"hidden-index",  "sortable" : true, "visible" : true },
 			{"name":"Name", "sortable" : false },
 			{"name":"C1", "sortable" : false },
 			{"name":"C2", "sortable" : false },
@@ -32,7 +32,6 @@ function initDataTable() {
 		} else {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-//			alert($(this).index());
 		}
 	});
 	// 前回データのロード
