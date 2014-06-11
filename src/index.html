@@ -216,7 +216,7 @@
 			var targetRow = $('tr.selected');
 			if ( targetRow.length == 0 ) { 
 				alert("挿入したい行を選択してください。");
-				return
+				return;
 			}
 
 			var rowdata = api.row(targetRow).data();
@@ -261,9 +261,13 @@
 		// 上書き
 		// 
 		function replace() {
-			var values = [ issueNewIndex() ].concat(get_cmd());
-			var t = $('#example').DataTable();
-			t.row('.selected').data( values ).draw();
+			var values = get_cmd();
+			
+			var api = $('#example').DataTable();
+			var currentRow = api.row('.selected').data();
+			var newRow = [currentRow[0]].concat(values);
+			
+			api.row('.selected').data(newRow).draw();
 
 			// 状態保存する
 			saveDataTable("def_data");
