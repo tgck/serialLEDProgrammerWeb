@@ -1,10 +1,23 @@
 function initDataTable() {
-
+	
 	var table = $('#example').dataTable({
+		"order" : [[0, "asc"]],
+		"columns" : [
+			{"name":"hidden-index",  "sortable" : true, "visible" : true },
+			{"name":"Name", "sortable" : false },
+			{"name":"C1", "sortable" : false },
+			{"name":"C2", "sortable" : false },
+			{"name":"C3", "sortable" : false },
+			{"name":"C4", "sortable" : false },
+			{"name":"D1", "sortable" : false },
+			{"name":"D2", "sortable" : false },
+			{"name":"D3", "sortable" : false },
+			{"name":"D4", "sortable" : false },
+			{"name":"Remarks", "sortable" : false }
+		],
 		"bPaginate": true,
 		"bLengthChange": false,
 		"bFilter": false,
-		"bSort": false,
 		"bInfo": false,
 		"bAutoWidth": false,
 		"scrollY": false, // false: スクロールを許可しない
@@ -12,20 +25,17 @@ function initDataTable() {
 		"paging": false,
 		"jQueryUI": true
 	});
-
+	
 	$('#example tbody').on( 'click', 'tr', function () {
 		if ( $(this).hasClass('selected') ) {
 			$(this).removeClass('selected');
 		} else {
 			table.$('tr.selected').removeClass('selected');
 			$(this).addClass('selected');
-//			alert($(this).index());
 		}
 	});
-
 	// 前回データのロード
 	loadDataTable("def_data");
-
 	// データ操作は以下を参照
 	// http://datatables.net/examples/api/
 }
@@ -50,9 +60,10 @@ function saveDataTable(keyName) {
 function loadDataTable(keyName) {
 	// localStorageが利用できる場合のみロードする。
 	if (window.localStorage) {
+		
 		var json_text = localStorage.getItem(keyName);
 		
-		if(json_text != null){
+		if(json_text != null && json_text.length > 0){
 			// テーブルからコマンドオブジェクトを生成する
 			var oTable = $('#example').dataTable();
 			// クリア

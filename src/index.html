@@ -33,6 +33,7 @@
 	<script type="text/javascript" src="lib/colorpicker/js/colorpicker.js"></script>
 
 	<!-- this app -->
+	<script type="text/javascript" src="js/arrayUtil.js"></script>
 	<script type="text/javascript" src="js/SrLib.js"></script>
 	<script type="text/javascript" src="js/SrCmds.js"></script>
 	<script type="text/javascript" src="js/SrPlay.js"></script>
@@ -151,29 +152,91 @@
 
 			return values;
 		}
+
+		//
+		// get the new Index of the datatable
+		// インデックスの払い出し(末尾)
+		//
+		function issueNewIndex() {
+			var api = $('#example').DataTable();
+
+			var data = api.data();
 		
+			if (data.length == 0) {
+				return 0; // レコードなしの場合、0
+			} 
+			
+			// 1件以上レコードが存在する場合
+			var t = $('#example').dataTable();	
+			var arr = [];
+			for (var i=0; i<data.length; i++){
+				arr.push(t.fnGetData(i, 0));
+			}
+			var maxIndex =  Math.max.apply(null, arr);
+			
+			return maxIndex + 10; // 10 is a number to keep space between records.
+		}
+		
+		//
+		// get the next Index of the selected row
+		// インデックスの払い出し(選択行の後)
+		//
+		function issueNextIndex() {
+			var api = $('#example').DataTable();
+			
+			// 行選択されていない場合は何もせず終了
+			var selectedRow = $('tr.selected');
+			if ( selectedRow.length == 0 ) { 
+				alert("挿入したい行を選択してください。");
+				return;
+			}
+			
+			// レコード作成と追加
+			var currentRowData = api.row(selectedRow).data();
+			var currentIndex = parseInt(currentRowData[0]);
+			return currentIndex + 1;
+		}
+		
+		//
+		// remap the indices
+		// テーブルインデックスを振りなおす(挿入のあとに利用する)
+		//
+		function remap() {
+			var api = $('#example').DataTable();
+			var data = api.data();
+			xsort(data, 0, 1);
+			
+			var t = $('#example').dataTable();
+
+			var arr = []; // 順位算出用の配列
+			for (var i=0; i<data.length; i++){
+				arr.push(t.fnGetData(i, 0));
+			}
+			arr.nsort();
+			for (var i=0; i<data.length; i++ ){
+				var searchTarget = t.fnGetData(i, 0);
+				var newIndex = arr.indexOf(searchTarget);
+				t.fnUpdate( 10*newIndex, i , 0 ); // "10" is a number to keep space between records.
+			}
+		}
 		// 
 		// 挿入
-		// TODO: datatablesは中途行に行追加する手段がない
-		//       http://stackoverflow.com/questions/22387948/add-a-row-after-the-selected-row-in-jquery-datatables
-		//       → ソート済みのdataモデルをロードし直すアプローチにする。
-		//          json のdatastoreを導入して、datatablesはViewに徹する
 		// 
 		function insert() {
-			alert("TODO: INSERT");
+			var api = $('#example').DataTable();
 			
-			// 選択行を取得
-			var rows = $('#example tr')
-			var selectedRow;
+			// 新規行の追加
+			var rowToInsert = [ issueNextIndex() ].concat( get_cmd() );
+			api.row.add(rowToInsert).draw();
 			
-			if (! rows.hasClass('selected')){
-				alert("No record selected. Select any row first.");
-				return;
-			} else {
-				alert($(".selected").index())
-				// 行挿入
-				// TODO
-			}
+			// 行の再選択
+			var selectedIndexBefore = $('tr.selected').index();
+			api.$('tr').eq(selectedIndexBefore).removeClass('selected');
+			api.$('tr').eq(selectedIndexBefore+1).addClass('selected');
+			
+			// インデックス振り直し
+			remap();
+
 			// 状態保存する
 			saveDataTable("def_data");
 		}
@@ -181,11 +244,14 @@
 		// 追加
 		// 
 		function add() {
-			var values = get_cmd();
-			var t = $('#example').DataTable();
-			var node = t.row.add( values ).draw().node(); // 表示して選択
+			var api = $('#example').DataTable();
+			
+			var values = [ issueNewIndex() ].concat( get_cmd() );
+			var node = api.row.add( values ).draw().node(); // 表示して選択
 			$(node).click();
 
+			// NOTE: no need to remap
+			
 			// 状態保存する
 			saveDataTable("def_data");
 		}
@@ -193,10 +259,12 @@
 		// 
 		// 上書き
 		// 
-		function replace() {
-			var values = get_cmd();
-			var t = $('#example').DataTable();
-			t.row('.selected').data( values ).draw();
+		function replace() {			
+			var api = $('#example').DataTable();
+			
+			var currentRow = api.row('.selected').data()
+			var values = [ currentRow[0]].concat( get_cmd() );
+			api.row('.selected').data(values).draw();
 
 			// 状態保存する
 			saveDataTable("def_data");
@@ -215,10 +283,19 @@
 		// 削除
 		// 
 		function dele() {
-			var t = $('#example').DataTable();
-			t.row('.selected').remove().draw( false );
+			var api = $('#example').DataTable();
+			api.row('.selected').remove().draw( false );
 
 			// 状態保存する
+			saveDataTable("def_data");
+		}
+
+		// 
+		// 全削除
+		// 
+		function truncate(){
+			var t = $('#example').dataTable();
+			t.fnClearTable(true);
 			saveDataTable("def_data");
 		}
 
@@ -283,6 +360,7 @@
 			initDataTable();
 			SyntaxHighlighter.all();
 			$("#tab1").click(); // ColorPickerの接続漏れ対策
+		
 		});
 
 	</script>
@@ -625,7 +703,7 @@
 				<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
 				<tr><button onclick="replace()">上書</button></tr><!-- 選択しているレコードに上書き -->
 				<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
-				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->
+				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->				
 			</table>
 			<div>
 				<h8>リストの上から下の流れでLED演出します。※先頭行には、システム設定(System)パラメータを入れてください。</h8>
@@ -634,6 +712,7 @@
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
+						<th>INDEX</th>
 						<th>Name</th>
 						<th>C1</th>
 						<th>C2</th>
