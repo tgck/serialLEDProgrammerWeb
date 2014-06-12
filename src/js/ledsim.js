@@ -14,7 +14,7 @@ function led_play(){
   var oTable = $('#example').dataTable();
   $.each( oTable.fnGetData(), function(i, row){
     // Remarksに入っているjsonを取得
-    cmdArray[i] = CmdFromJson(JSON.parse(row[9]));
+    cmdArray[i] = CmdFromJson(JSON.parse(row[10]));
   });
 
   // データが存在する場合のみ実施する。
