@@ -60,6 +60,7 @@ function import_tbl(){
 
 		for(var i = 0 ; i < cmds.length ; i++){
 			var values = get_cmd_values(cmds[i]);
+			values.unshift(i * 10);
 			var node = t.row.add( values ).draw().node(); // •\Ž¦‚µ‚Ä‘I‘ð
 		}
 		
@@ -97,7 +98,7 @@ function get_cmd_values(cmd) {
 	values[6] = NumberToHexString(uint8s[5]);
 	values[7] = NumberToHexString(uint8s[6]);
 	values[8] = NumberToHexString(uint8s[7]);
-	values[9] = JSON.stringify(cmd);
+	values[9]= JSON.stringify(cmd);
 
 	return values;
 }

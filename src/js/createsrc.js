@@ -51,7 +51,7 @@ function create_insert_table(){
   var oTable = $('#example').dataTable();
   $.each( oTable.fnGetData(), function(i, row){
     // Remarksに入っているjsonを取得
-    cmdArray.push(CmdFromJson(JSON.parse(row[9])));
+    cmdArray.push(CmdFromJson(JSON.parse(row[10])));
   });
 
   // 終了
