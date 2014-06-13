@@ -161,10 +161,10 @@
 		}
 		
 		//
-		// get the next Index of the selected row
-		// インデックスの払い出し(選択行の後)
+		// get the previous Index of the selected row
+		// インデックスの払い出し(選択行の前)
 		//
-		function issueNextIndex() {
+		function issuePrevIndex() {
 			var api = $('#example').DataTable();
 			
 			// 行選択されていない場合は何もせず終了
@@ -177,7 +177,7 @@
 			// レコード作成と追加
 			var currentRowData = api.row(selectedRow).data();
 			var currentIndex = parseInt(currentRowData[0]);
-			return currentIndex + 1;
+			return currentIndex - 1;
 		}
 		
 		//
@@ -209,13 +209,13 @@
 			var api = $('#example').DataTable();
 			
 			// 新規行の追加
-			var rowToInsert = [ issueNextIndex() ].concat( get_cmd() );
+			var rowToInsert = [ issuePrevIndex() ].concat( get_cmd() );
 			api.row.add(rowToInsert).draw();
 			
 			// 行の再選択
 			var selectedIndexBefore = $('tr.selected').index();
 			api.$('tr').eq(selectedIndexBefore).removeClass('selected');
-			api.$('tr').eq(selectedIndexBefore+1).addClass('selected');
+			api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
 			
 			// インデックス振り直し
 			remap();
