@@ -208,18 +208,22 @@
 		function insert() {
 			var api = $('#example').DataTable();
 			
-			// 新規行の追加
-			var rowToInsert = [ issuePrevIndex() ].concat( get_cmd() );
-			api.row.add(rowToInsert).draw();
+			var index = issuePrevIndex()
 			
-			// 行の再選択
-			var selectedIndexBefore = $('tr.selected').index();
-			api.$('tr').eq(selectedIndexBefore).removeClass('selected');
-			api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
+			if ( index != undefined ){
+				// 新規行の追加
+				var rowToInsert = [ index ].concat( get_cmd() );
+				api.row.add(rowToInsert).draw();
+				
+				// 行の再選択
+				var selectedIndexBefore = $('tr.selected').index();
+				api.$('tr').eq(selectedIndexBefore).removeClass('selected');
+				api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
+				
+				// インデックス振り直し
+				remap();
+			}
 			
-			// インデックス振り直し
-			remap();
-
 			// 状態保存する
 			saveDataTable("def_data");
 		}
@@ -242,12 +246,16 @@
 		// 
 		// 上書き
 		// 
-		function replace() {			
+		function replace() {
 			var api = $('#example').DataTable();
 			
 			var currentRow = api.row('.selected').data()
-			var values = [ currentRow[0]].concat( get_cmd() );
-			api.row('.selected').data(values).draw();
+			
+			if( currentRow != undefined )
+			{
+				var values = [ currentRow[0]].concat( get_cmd() );
+				api.row('.selected').data(values).draw();
+			}
 
 			// 状態保存する
 			saveDataTable("def_data");
@@ -267,7 +275,12 @@
 		// 
 		function dele() {
 			var api = $('#example').DataTable();
+
+			// 行の再選択
+			var selectedIndexBefore = $('tr.selected').index();
 			api.row('.selected').remove().draw( false );
+			// 再選択
+			api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
 
 			// 状態保存する
 			saveDataTable("def_data");
@@ -685,7 +698,7 @@
 				<tr><button onclick="add()">追加</button></tr><!-- リストの末尾にレコード追加 -->
 				<tr><button onclick="replace()">上書</button></tr><!-- 選択しているレコードに上書き -->
 				<tr><button onclick="get()">取得</button></tr><!-- レコードから設定ペインに復元 -->
-				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->				
+				<tr><button onclick="dele()">削除</button></tr><!-- 選択レコードを削除 -->
 			</table>
 			<div>
 				<h8>リストの上から下の流れでLED演出します。※先頭行には、システム設定(System)パラメータを入れてください。</h8>
