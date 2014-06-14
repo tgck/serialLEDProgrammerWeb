@@ -3,7 +3,7 @@ function initDataTable() {
 	var table = $('#example').dataTable({
 		"order" : [[0, "asc"]],
 		"columns" : [
-			{"name":"hidden-index",  "sortable" : true, "visible" : true },
+			{"name":"hidden-index", "sortable" : false },
 			{"name":"Name", "sortable" : false },
 			{"name":"C1", "sortable" : false },
 			{"name":"C2", "sortable" : false },
@@ -20,10 +20,9 @@ function initDataTable() {
 		"bFilter": false,
 		"bInfo": false,
 		"bAutoWidth": false,
-		"scrollY": false, // false: スクロールを許可しない
+		"scrollY": 200, // false: スクロールを許可しない
 		"scrollCollapse": false, // false: レコード長に応じてtableの高さを可変
-		"paging": false,
-		"jQueryUI": false
+		"paging": false
 	});
 	
 	$('#example tbody').on( 'click', 'tr', function () {
