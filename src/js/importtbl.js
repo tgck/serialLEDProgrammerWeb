@@ -74,6 +74,9 @@ function import_tbl(){
 				break;
 			}
 		}
+		
+		// ダイアログを閉じる
+		$( "#dialog" ).dialog( "close" );
 	}
 
 }

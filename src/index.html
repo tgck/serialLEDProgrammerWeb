@@ -16,7 +16,9 @@
 	<!--<script type="text/javascript" src="lib/js/jquery-1.9.1.min.js"></script>-->
 	<script type="text/javascript" language="javascript" src="lib/media/js/jquery.js"></script>
 	<script type="text/javascript" src="lib/js/kickstart.js"></script>
-	
+<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 	<!-- datatables -->
 	<link rel="stylesheet" type="text/css" href="lib/media/css/jquery.dataTables.css">
 	<style type="text/css" class="init"></style>
@@ -176,6 +178,9 @@
 			
 			// レコード作成と追加
 			var currentRowData = api.row(selectedRow).data();
+			if (currentRowData == undefined ){
+			  return;
+			}
 			var currentIndex = parseInt(currentRowData[0]);
 			return currentIndex - 1;
 		}
@@ -357,6 +362,22 @@
 			SyntaxHighlighter.all();
 			$("#tab1").click(); // ColorPickerの接続漏れ対策
 		
+			// 
+			// インポート機能のポップアップ
+			// 
+			var d = $('#dialog');
+
+			// 1ダイアログを初期化（自動オープンしない）
+			d.dialog({
+				modal: true,
+				width: 640,
+				autoOpen: false
+			});
+
+			// ボタン・クリック時にダイアログを開く
+			$('#impstbtn').click(function(e){
+				d.dialog('open');
+			});
 		});
 	</script>
 </head>
@@ -721,6 +742,9 @@
 					</tr>
 				</thead>
 			</table>
+			<dev>
+				<input id="impstbtn" type="button" value="インポート" />
+			</dev>
 		</div>
 	</div>
 </div>
@@ -804,20 +828,18 @@
 		</div>
 	</div>
 
-	<div class="col_13 column">
-		<ul class="tabs">
-			<li class="first last current">
-				<a href="#import">インポート</a>
-			</li>
-		</ul>
-		<div id="import" class="tab-content clearfix" style="display: block; ">
-			<button onclick="import_tbl()">インポート</button>
-			<div>
-				<h8>※led_play_listのテーブル名を抜き出してインポートします。詳細なチェックは行っていません。16進数表記(0xAA,0xBB…)としてください。</h8>
-			</div>
-			<div>
-				<textarea id="importtext" cols="240" rows="20" placeholder="テーブル(led_play_list)を張り付けてください"></textarea>
-			</div>
+	<div id="dialog" title="　　インポート処理">
+		<div>
+			<h6>LED演出用テーブルが含まれたC言語のコードを張り付けてください。</h6>
+		</div>
+		<div>
+			<textarea id="importtext" style="width:610px;" placeholder="テーブル(led_play_list)を張り付けてください"></textarea>
+		</div>
+		<div>
+			<h8>※led_play_listのテーブル名を抜き出してインポートします。</h8>
+		</div>
+		<div>
+		<button onclick="import_tbl()">実行</button>
 		</div>
 	</div>
 </div>
