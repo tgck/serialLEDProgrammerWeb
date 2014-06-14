@@ -279,11 +279,15 @@
 		function dele() {
 			var api = $('#example').DataTable();
 
-			// 行の再選択
-			var selectedIndexBefore = $('tr.selected').index();
+			// 選択行インデックスを待避
+			var indexSelected = $('tr.selected').index();
+			
+			// 行削除
 			api.row('.selected').remove().draw( false );
-			// 再選択
-			api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
+			
+			// 選択対象行の判定〜行選択
+			indexLast = api.data().length -1
+			api.$('tr').eq( Math.min(indexSelected, indexLast) ).addClass('selected');
 
 			// 状態保存する
 			saveDataTable("def_data");
