@@ -217,14 +217,14 @@
 				// 新規行の追加
 				var rowToInsert = [ index ].concat( get_cmd() );
 				api.row.add(rowToInsert).draw();
+								
+				// インデックス振り直し
+				remap();
 				
 				// 行の再選択
 				var selectedIndexBefore = $('tr.selected').index();
 				api.$('tr').eq(selectedIndexBefore).removeClass('selected');
-				api.$('tr').eq(selectedIndexBefore-1).addClass('selected');
-				
-				// インデックス振り直し
-				remap();
+				api.$('tr').eq( Math.max (selectedIndexBefore-1, 0) ).addClass('selected');
 			}
 			
 			// 状態保存する
