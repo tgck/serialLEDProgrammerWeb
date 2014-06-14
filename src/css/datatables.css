@@ -33,22 +33,22 @@ table.dataTable {
     cursor: pointer;
     *cursor: hand; }
   table.dataTable thead .sorting {
-    background: url("../images/sort_both.png") no-repeat center right; }
+    background: url("images/sort_both.png") no-repeat center right; }
   table.dataTable thead .sorting_asc {
-    background: url("../images/sort_asc.png") no-repeat center right; }
+    background: url("images/sort_asc.png") no-repeat center right; }
   table.dataTable thead .sorting_desc {
-    background: url("../images/sort_desc.png") no-repeat center right; }
+    background: url("images/sort_desc.png") no-repeat center right; }
   table.dataTable thead .sorting_asc_disabled {
-    background: url("../images/sort_asc_disabled.png") no-repeat center right; }
+    background: url("images/sort_asc_disabled.png") no-repeat center right; }
   table.dataTable thead .sorting_desc_disabled {
-    background: url("../images/sort_desc_disabled.png") no-repeat center right; }
+    background: url("images/sort_desc_disabled.png") no-repeat center right; }
   table.dataTable tbody tr {
     background-color: white; }
     table.dataTable tbody tr.selected {
       background-color: #b0bed9; }
   table.dataTable tbody th,
   table.dataTable tbody td {
-    padding: 4px 6px; }
+    padding: 2px 4px; }
   table.dataTable th.center,
   table.dataTable td.center,
   table.dataTable td.dataTables_empty {
@@ -268,7 +268,7 @@ table.dataTable td {
     margin-top: -25px;
     padding-top: 20px;
     text-align: center;
-    font-size: 1.2em;
+    font-size: 0.8em;
     background-color: white;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(25%, rgba(255, 255, 255, 0.9)), color-stop(75%, rgba(255, 255, 255, 0.9)), color-stop(100%, rgba(255, 255, 255, 0)));
     /* Chrome,Safari4+ */
