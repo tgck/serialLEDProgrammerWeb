@@ -1,10 +1,10 @@
 // 
 // importtbl.js
-//   ƒe[ƒuƒ‹ƒCƒ“ƒ|[ƒg‚Ì¶¬
+//   ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¤ãƒ³ãƒãƒ¼ãƒˆã®ç”Ÿæˆ
 // 
 
 // 
-// ƒe[ƒuƒ‹ƒCƒ“ƒ|[ƒgˆ—
+// ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¤ãƒ³ãƒãƒ¼ãƒˆå‡¦ç†
 // 
 function import_tbl(){
 
@@ -12,13 +12,13 @@ function import_tbl(){
 		
 	var pos_st = txt.search('led_play_list');
 	
-	// Œ©‚Â‚©‚Á‚½ê‡
+	// è¦‹ã¤ã‹ã£ãŸå ´åˆ
 	if(pos_st != -1){
 	  var pos_ed = txt.indexOf( ';', pos_st );
 	  
 	  var subtxt = txt.substring( pos_st, pos_ed );
 	  
-		// ”’l‚ğæ“¾‚µ”z—ñ”’l•ÏŠ·
+		// æ•°å€¤ã‚’å–å¾—ã—é…åˆ—æ•°å€¤å¤‰æ›
 		var val = [];
 		var pos_index = 0;
 		while(true)
@@ -34,7 +34,7 @@ function import_tbl(){
 		}
 
 		var cmds = [];
-		// 8‚Ì”{”‚Å‚ ‚ê‚Îˆ—‚·‚éB
+		// 8ã®å€æ•°ã§ã‚ã‚Œã°å‡¦ç†ã™ã‚‹ã€‚
 		if(val.length % 8 == 0)
 		{
 			var buff = new ArrayBuffer(8);
@@ -52,19 +52,19 @@ function import_tbl(){
 			}
 		}
 
-		// ƒNƒŠƒA
+		// ã‚¯ãƒªã‚¢
 		$('#example').dataTable().fnClearTable(false);
 
-		// ƒRƒ}ƒ“ƒh‚ªˆê‚Â‚Å‚à‘¶İ‚·‚ê‚Îƒe[ƒuƒ‹‚ğ•ÏX‚·‚éB
+		// ã‚³ãƒãƒ³ãƒ‰ãŒä¸€ã¤ã§ã‚‚å­˜åœ¨ã™ã‚Œã°ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å¤‰æ›´ã™ã‚‹ã€‚
 		var t = $('#example').DataTable();
 
 		for(var i = 0 ; i < cmds.length ; i++){
 			var values = get_cmd_values(cmds[i]);
 			values.unshift(i * 10);
-			var node = t.row.add( values ).draw().node(); // •\¦‚µ‚Ä‘I‘ğ
+			var node = t.row.add( values ).draw().node(); // è¡¨ç¤ºã—ã¦é¸æŠ
 		}
 		
-		// LED‚Ì’·‚³‚ğXV‚·‚é‚½‚ß‚Ìˆ—
+		// LEDã®é•·ã•ã‚’æ›´æ–°ã™ã‚‹ãŸã‚ã®å‡¦ç†
 		for(var i = 0 ; i < cmds.length ; i++){
 			if(cmds[i].name == "system"){
 				ledsToUse = cmds[i].length;
@@ -75,22 +75,22 @@ function import_tbl(){
 			}
 		}
 		
-		// ƒ_ƒCƒAƒƒO‚ğ•Â‚¶‚é
+		// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’é–‰ã˜ã‚‹
 		$( "#dialog" ).dialog( "close" );
 	}
 
 }
 
 // 
-// ƒRƒ}ƒ“ƒh‚Ìæ“¾
+// ã‚³ãƒãƒ³ãƒ‰ã®å–å¾—
 // 
 function get_cmd_values(cmd) {
 
-	// ƒŒƒR[ƒh‘}“ü
+	// ãƒ¬ã‚³ãƒ¼ãƒ‰æŒ¿å…¥
 	var buffer = cmd.get_command();
 	var uint8s = new Uint8Array(buffer);
 
-	// Grid‚É•\¦‚·‚éƒf[ƒ^‚Ì’Ç‰Á
+	// Gridã«è¡¨ç¤ºã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã®è¿½åŠ 
 	var values = [];
 	values[0] = cmd.get_funcname();
 	values[1] = NumberToHexString(uint8s[0]);

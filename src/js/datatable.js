@@ -23,7 +23,7 @@ function initDataTable() {
 		"scrollY": false, // false: スクロールを許可しない
 		"scrollCollapse": false, // false: レコード長に応じてtableの高さを可変
 		"paging": false,
-		"jQueryUI": true
+		"jQueryUI": false
 	});
 	
 	$('#example tbody').on( 'click', 'tr', function () {
